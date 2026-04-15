@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gandhari Unicode 変換ツール</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>Gandhari Unicode 変換ツール</h1>
+        <p>
+          Unicodeの私用領域（PUA）を使った「Gandhari
+          Unicode」フォントの文字を、結合文字を用いた標準Unicodeに変換します。
+        </p>
+      </header>
+
+      <main>
+        <div class="tab-container">
+          <button class="tab active" data-tab="text">テキスト変換</button>
+          <button class="tab" data-tab="docx">DOCXファイル変換</button>
+        </div>
+
+        <!-- テキスト変換 -->
+        <section id="text-panel" class="panel active">
+          <div class="field-group">
+            <label for="input-text"
+              >変換前テキスト（Gandhari Unicode）</label
+            >
+            <textarea
+              id="input-text"
+              rows="8"
+              placeholder="ここにテキストを貼り付けてください..."
+            ></textarea>
+          </div>
+          <div class="btn-row">
+            <button id="convert-text-btn" class="btn btn-primary">変換</button>
+            <button id="clear-btn" class="btn btn-secondary">クリア</button>
+          </div>
+          <div class="field-group">
+            <label for="output-text">変換後テキスト</label>
+            <textarea id="output-text" rows="8" readonly></textarea>
+          </div>
+          <div class="btn-row">
+            <button id="copy-btn" class="btn btn-secondary" disabled>
+              クリップボードにコピー
+            </button>
+          </div>
+        </section>
+
+        <!-- DOCXファイル変換 -->
+        <section id="docx-panel" class="panel">
+          <div class="field-group">
+            <label for="docx-input">DOCXファイルを選択</label>
+            <input type="file" id="docx-input" accept=".docx" />
+            <p class="hint">
+              ※
+              ファイルはブラウザ内で処理され、サーバーには送信されません。
+            </p>
+          </div>
+          <div class="btn-row">
+            <button id="convert-docx-btn" class="btn btn-primary" disabled>
+              変換してダウンロード
+            </button>
+          </div>
+          <div id="docx-status" class="status"></div>
+        </section>
+      </main>
+
+      <footer>
+        <p>
+          変換後のテキスト・ファイルは、結合文字が表示できるフォントで保存してください。
+        </p>
+        <p>
+          <a href="https://github.com/Yuzki/gandhari-unicode-convert">GitHub</a>
+        </p>
+      </footer>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <script src="js/mapping.js"></script>
+    <script src="js/converter.js"></script>
+    <script src="js/docx-processor.js"></script>
+    <script src="js/app.js"></script>
+  </body>
+</html>
