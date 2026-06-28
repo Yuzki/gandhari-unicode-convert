@@ -89,3 +89,13 @@ describe("convertGandhariToUnicode", () => {
     assert.equal(result.length, expectedUnit.length * 10000);
   });
 });
+
+describe("createGandhariConverter", () => {
+  it("builds converters from the supplied mapping", () => {
+    const customConverter = createGandhariConverter(
+      new Map([[0xe800, "custom"]])
+    );
+
+    assert.equal(customConverter("\uE800 \uE802"), "custom \uE802");
+  });
+});
