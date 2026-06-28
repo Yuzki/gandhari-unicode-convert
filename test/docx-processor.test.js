@@ -2,12 +2,13 @@ const { describe, it, before } = require("node:test");
 const assert = require("node:assert/strict");
 const { loadSources, installDocxStubs } = require("./helpers/load-source");
 
+before(() => {
+  loadSources("mapping.js", "converter.js", "docx-processor.js");
+});
+
 // ── A. Regex pattern tests ──────────────────────────────────────────────────
 
 describe("DOCX XML path regex", () => {
-  const pattern =
-    /^word\/(document|header\d*|footer\d*|footnotes|endnotes)\.xml$/;
-
   const shouldMatch = [
     "word/document.xml",
     "word/header1.xml",
@@ -36,13 +37,13 @@ describe("DOCX XML path regex", () => {
 
   for (const path of shouldMatch) {
     it(`matches "${path}"`, () => {
-      assert.ok(pattern.test(path));
+      assert.ok(isDocxTextXmlPath(path));
     });
   }
 
   for (const path of shouldNotMatch) {
     it(`does not match "${path}"`, () => {
-      assert.ok(!pattern.test(path));
+      assert.ok(!isDocxTextXmlPath(path));
     });
   }
 });
@@ -50,8 +51,6 @@ describe("DOCX XML path regex", () => {
 // ── B. Output filename tests ────────────────────────────────────────────────
 
 describe("output filename logic", () => {
-  const rename = (name) => name.replace(/\.docx$/i, "_converted.docx");
-
   const cases = [
     ["document.docx", "document_converted.docx"],
     ["My File.docx", "My File_converted.docx"],
@@ -63,7 +62,7 @@ describe("output filename logic", () => {
 
   for (const [input, expected] of cases) {
     it(`"${input}" -> "${expected}"`, () => {
-      assert.equal(rename(input), expected);
+      assert.equal(getConvertedDocxName(input), expected);
     });
   }
 });
@@ -103,10 +102,6 @@ describe("convertDocxFile", () => {
     return mockZip;
   }
 
-  before(() => {
-    loadSources("mapping.js", "converter.js");
-  });
-
   function setupDocxStubs(entries) {
     const mockZip = createMockZip(entries);
 
@@ -122,7 +117,6 @@ describe("convertDocxFile", () => {
     };
 
     installDocxStubs(MockJSZip, mockSaveAs);
-    loadSources("docx-processor.js");
 
     return mockZip;
   }

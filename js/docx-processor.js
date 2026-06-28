@@ -1,20 +1,30 @@
 // DOCX ファイルの読み込み・変換・保存
 
+const DOCX_TEXT_XML_PATH_PATTERN =
+  /^word\/(document|header\d*|footer\d*|footnotes|endnotes)\.xml$/;
+
+function isDocxTextXmlPath(path) {
+  return DOCX_TEXT_XML_PATH_PATTERN.test(path);
+}
+
+function getConvertedDocxName(fileName) {
+  return fileName.replace(/\.docx$/i, "_converted.docx");
+}
+
+async function convertDocxZipEntries(zip, convertText) {
+  for (const [path, zipEntry] of Object.entries(zip.files)) {
+    if (isDocxTextXmlPath(path)) {
+      const xmlString = await zipEntry.async("string");
+      zip.file(path, convertText(xmlString));
+    }
+  }
+}
+
 async function convertDocxFile(file) {
   const arrayBuffer = await file.arrayBuffer();
   const zip = await JSZip.loadAsync(arrayBuffer);
 
-  // テキストを含む可能性のあるXMLファイルを対象にする
-  const textXmlPattern =
-    /^word\/(document|header\d*|footer\d*|footnotes|endnotes)\.xml$/;
-
-  for (const [path, zipEntry] of Object.entries(zip.files)) {
-    if (textXmlPattern.test(path)) {
-      const xmlString = await zipEntry.async("string");
-      const convertedXml = convertGandhariToUnicode(xmlString);
-      zip.file(path, convertedXml);
-    }
-  }
+  await convertDocxZipEntries(zip, convertGandhariToUnicode);
 
   const blob = await zip.generateAsync({
     type: "blob",
@@ -22,7 +32,7 @@ async function convertDocxFile(file) {
       "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
   });
 
-  const outputName = file.name.replace(/\.docx$/i, "_converted.docx");
+  const outputName = getConvertedDocxName(file.name);
   saveAs(blob, outputName);
 
   return outputName;
