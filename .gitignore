@@ -1,4 +1,7 @@
 # AI agents
 .agents/
+.codex/
+.claude/
 AGENTS.md
 CLAUDE.md
+
