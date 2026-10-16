@@ -1,0 +1,20 @@
+{
+  "version": "0.1.0",
+  "default": "en",
+  "languages": {
+    "en": {
+      "status": "supported",
+      "nativeName": "English",
+      "messages": "en.json",
+      "fallback": ["ja"],
+      "typography": "latin"
+    },
+    "ja": {
+      "status": "supported",
+      "nativeName": "日本語",
+      "messages": "ja.json",
+      "fallback": ["en"],
+      "typography": "cjk-ja"
+    }
+  }
+}

@@ -1,56 +1,72 @@
-# Gandhari Unicode 変換ツール
+# Gandhari Unicode Converter
 
-Unicode の私用領域（PUA）を使った「Gandhari Unicode」フォントの文字を、結合文字を用いた標準 Unicode 文字列へ変換するブラウザ用ツールです。
+A browser tool that converts characters of the "Gandhari Unicode" font, which uses the Unicode Private Use Area (PUA), into standard Unicode strings that use combining characters.
 
-公開ページ: <https://yuzki.github.io/gandhari-unicode-convert/>
+Public page: <https://yuzki.github.io/gandhari-unicode-convert/>
 
-## できること
+## Features
 
-- テキスト欄に貼り付けた Gandhari Unicode 文字を標準 Unicode へ変換
-- `.docx` ファイル内の本文、ヘッダー、フッター、脚注、文末脚注の XML テキストを変換
-- 変換後の `.docx` を `_converted.docx` 付きのファイル名でダウンロード
+- Convert text pasted into the page from Gandhari Unicode to standard Unicode
+- Convert the XML text of the body, headers, footers, footnotes and endnotes of a `.docx` file
+- Download the converted file with a `_converted.docx` name
+- English and Japanese interface, light and dark color themes
 
-DOCX ファイルはブラウザ内で処理され、サーバーには送信されません。
+## Usage
 
-## 使い方
+1. Open the public page.
+2. Choose the **Text conversion** or **DOCX file conversion** tab.
+3. Text: paste text, choose **Convert**, then use **Copy to clipboard**. Empty input is reported as an error; whitespace is never trimmed and the text is never normalized. If copying is blocked, the result is selected so you can copy it manually.
+4. DOCX: choose a `.docx` file, then **Convert and download**. The file extension must be `.docx` (any letter case). While a file is converting, file selection and the convert button are disabled; if conversion fails, the file stays selected so you can retry.
+5. Check and save the result with a font or editor that can display combining characters.
 
-### Web ページで使う
+### Language and theme
 
-1. 公開ページを開きます。
-2. `テキスト変換` または `DOCXファイル変換` のタブを選びます。
-3. テキストを貼り付けるか、`.docx` ファイルを選択して変換します。
-4. 変換後のテキストやファイルを、結合文字が表示できるフォントで確認・保存します。
+The language follows `?lang=en` or `?lang=ja` in the URL, then your saved choice, then English. The theme follows the device setting unless you choose Light or Dark. Both choices are saved in the browser's local storage when it is available; if storage is blocked they apply to the current page view only. If the dictionaries cannot be loaded, the converter still works with English text.
 
-### ローカルで開く
+### Privacy and dependencies
 
-このリポジトリは静的サイトです。ローカルで確認する場合は、簡易 HTTP サーバーを起動してブラウザで開きます。
+Conversion runs in your browser. The text and the contents of DOCX files are not uploaded. This does not mean the page works offline or makes no external requests: [JSZip 3.10.1](https://cdnjs.com/libraries/jszip/3.10.1) and [FileSaver.js 2.0.5](https://cdnjs.com/libraries/FileSaver.js/2.0.5) are loaded from cdnjs. Text conversion does not need them, but DOCX conversion fails with a message if they cannot be loaded.
+
+### Run locally
+
+This is a static site. Serve it over HTTP (the dictionaries are fetched, so opening `index.html` as a file does not load them):
 
 ```sh
 uv run python -m http.server 8000
 ```
 
-起動後、`http://localhost:8000/` を開いてください。
+Then open `http://localhost:8000/`.
 
-## テスト
+## Tests
 
-テストは Node.js の組み込み test runner を使います。
+Tests use the Node.js built-in test runner:
 
 ```sh
 node --test
 ```
 
-クロス言語整合性テストでは `uv run python` を使い、`notebook/gandhari_conveter.py` の変換データと JavaScript のマッピングが一致することを確認します。
+- Mapping, text and DOCX conversion tests
+- Cross-language tests that use `uv run python` to check the JavaScript mapping against the data in `notebook/gandhari_conveter.py`
+- `test/locales.test.js`: English/Japanese dictionary parity and `index.html` i18n keys
+- `test/ui-state.test.js`: interface states (empty input, clipboard failures, DOCX eligibility, busy and failure recovery, dictionary failure, language change, tab keyboard handling) against a small DOM stub in `test/helpers/dom-stub.js`
 
-## ファイル構成
+## Shared design
 
-- `index.html`: 変換ツールの画面
-- `js/mapping.js`: Gandhari Unicode PUA から標準 Unicode への変換マップ
-- `js/converter.js`: テキスト変換ロジック
-- `js/docx-processor.js`: DOCX ファイル変換ロジック
-- `js/app.js`: UI 制御
-- `test/`: 変換、マッピング、DOCX 処理のテスト
-- `notebook/gandhari_conveter.py`: 元データを含む Python ノートブック由来の変換コード
+The interface uses a pinned snapshot of the VEDA AI shared design assets (unreleased 0.1.0, commit `fbeb384ea859c4c71019fc5d77e9cad645722a2a`) in [`vendor/veda-design/0.1.0-pilot-fbeb384/`](vendor/veda-design/0.1.0-pilot-fbeb384/). The upstream repository is private. The copies are unmodified; provenance, SHA-256 values, terms status and update/rollback steps are in [`SOURCE.md`](vendor/veda-design/0.1.0-pilot-fbeb384/SOURCE.md). Local adjustments are in `css/style.css`. Adoption issue: <https://github.com/Yuzki/gandhari-unicode-convert/issues/6>.
 
-## 注意
+## Files
 
-変換後の文字列には結合文字が含まれます。表示や保存には、結合文字の表示に対応したフォントやエディタを使ってください。
+- `index.html`: the page
+- `css/style.css`: local styles on top of the shared design
+- `locales/`: English and Japanese interface text and language profiles
+- `vendor/veda-design/`: pinned shared design assets
+- `js/mapping.js`: map from Gandhari Unicode PUA to standard Unicode
+- `js/converter.js`: text conversion
+- `js/docx-processor.js`: DOCX conversion
+- `js/app.js`: interface behavior
+- `test/`: tests
+- `notebook/gandhari_conveter.py`: original conversion data in Python
+
+## Note
+
+Converted text contains combining characters. Stacked marks may display poorly in fonts or editors that do not support them.

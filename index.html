@@ -1,82 +1,279 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Gandhari Unicode 変換ツール</title>
+    <meta name="color-scheme" content="light dark" />
+    <title data-i18n="app.pageTitle">Gandhari Unicode Converter</title>
+    <link rel="stylesheet" href="vendor/veda-design/0.1.0-pilot-fbeb384/styles/tokens.css" />
+    <link rel="stylesheet" href="vendor/veda-design/0.1.0-pilot-fbeb384/styles/typography.css" />
+    <link rel="stylesheet" href="vendor/veda-design/0.1.0-pilot-fbeb384/styles/components.css" />
     <link rel="stylesheet" href="css/style.css" />
+    <script src="vendor/veda-design/0.1.0-pilot-fbeb384/scripts/theme.js"></script>
+    <script
+      src="vendor/veda-design/0.1.0-pilot-fbeb384/scripts/i18n.js"
+      data-veda-locales="../../../../locales/"
+      defer
+    ></script>
   </head>
-  <body>
-    <div class="container">
-      <header>
-        <h1>Gandhari Unicode 変換ツール</h1>
-        <p>
-          Unicodeの私用領域（PUA）を使った「Gandhari
-          Unicode」フォントの文字を、結合文字を用いた標準Unicodeに変換します。
+  <body class="veda-root">
+    <a class="veda-skip-link" href="#main" data-i18n="common.skipLink"
+      >Skip to main content</a
+    >
+
+    <header class="veda-header">
+      <div class="veda-container veda-header__inner">
+        <p class="veda-brand">
+          <span class="veda-brand__service" data-i18n="app.title"
+            >Gandhari Unicode Converter</span
+          >
         </p>
-      </header>
-
-      <main>
-        <div class="tab-container">
-          <button class="tab active" data-tab="text">テキスト変換</button>
-          <button class="tab" data-tab="docx">DOCXファイル変換</button>
-        </div>
-
-        <!-- テキスト変換 -->
-        <section id="text-panel" class="panel active">
-          <div class="field-group">
-            <label for="input-text"
-              >変換前テキスト（Gandhari Unicode）</label
+        <div class="veda-header__tools">
+          <div class="veda-tool" data-veda-requires-js hidden>
+            <label class="veda-label" for="veda-language" data-i18n="common.language.label"
+              >Language</label
             >
-            <textarea
-              id="input-text"
-              rows="8"
-              placeholder="ここにテキストを貼り付けてください..."
-            ></textarea>
+            <select class="veda-select" id="veda-language" data-veda-language>
+              <option value="en" lang="en">English</option>
+              <option value="ja" lang="ja">日本語</option>
+            </select>
           </div>
-          <div class="btn-row">
-            <button id="convert-text-btn" class="btn btn-primary">変換</button>
-            <button id="clear-btn" class="btn btn-secondary">クリア</button>
+          <div class="veda-tool" data-veda-requires-js hidden>
+            <label class="veda-label" for="veda-theme" data-i18n="common.theme.label"
+              >Color theme</label
+            >
+            <select class="veda-select" id="veda-theme" data-veda-theme-control>
+              <option value="system" data-i18n="common.theme.system">Match device setting</option>
+              <option value="light" data-i18n="common.theme.light">Light</option>
+              <option value="dark" data-i18n="common.theme.dark">Dark</option>
+            </select>
           </div>
-          <div class="field-group">
-            <label for="output-text">変換後テキスト</label>
-            <textarea id="output-text" rows="8" readonly></textarea>
-          </div>
-          <div class="btn-row">
-            <button id="copy-btn" class="btn btn-secondary" disabled>
-              クリップボードにコピー
+        </div>
+      </div>
+    </header>
+
+    <main id="main" class="veda-main veda-container" tabindex="-1">
+      <div class="veda-stack">
+        <h1 class="veda-h1" data-i18n="app.title">Gandhari Unicode Converter</h1>
+        <p class="veda-prose veda-lead" data-i18n="app.lead">
+          Converts characters of the “Gandhari Unicode” font, which uses the Unicode Private Use
+          Area (PUA), into standard Unicode that uses combining characters.
+        </p>
+        <noscript>
+          <p class="veda-status veda-status--info" data-i18n="common.noscript">
+            JavaScript is disabled, so the converter cannot run. Enable JavaScript and reload this
+            page to use it.
+          </p>
+        </noscript>
+
+        <div data-veda-requires-js hidden class="veda-stack" id="converter-app">
+          <div
+            class="veda-tabs"
+            role="tablist"
+            aria-label="Conversion mode"
+            data-i18n-attr="aria-label:app.tabs.label"
+          >
+            <button
+              type="button"
+              class="veda-tab tab"
+              id="tab-text"
+              role="tab"
+              data-tab="text"
+              aria-selected="true"
+              aria-controls="text-panel"
+              data-i18n="app.tabs.text"
+            >
+              Text conversion
+            </button>
+            <button
+              type="button"
+              class="veda-tab tab"
+              id="tab-docx"
+              role="tab"
+              data-tab="docx"
+              aria-selected="false"
+              aria-controls="docx-panel"
+              tabindex="-1"
+              data-i18n="app.tabs.docx"
+            >
+              DOCX file conversion
             </button>
           </div>
-        </section>
 
-        <!-- DOCXファイル変換 -->
-        <section id="docx-panel" class="panel">
-          <div class="field-group">
-            <label for="docx-input">DOCXファイルを選択</label>
-            <input type="file" id="docx-input" accept=".docx" />
-            <p class="hint">
-              ※
-              ファイルはブラウザ内で処理され、サーバーには送信されません。
-            </p>
-          </div>
-          <div class="btn-row">
-            <button id="convert-docx-btn" class="btn btn-primary" disabled>
-              変換してダウンロード
-            </button>
-          </div>
-          <div id="docx-status" class="status"></div>
-        </section>
-      </main>
+          <!-- Text conversion -->
+          <section id="text-panel" class="veda-stack" role="tabpanel" aria-labelledby="tab-text">
+            <div
+              id="text-errors"
+              class="veda-error-summary"
+              role="alert"
+              tabindex="-1"
+              hidden
+            >
+              <h2 class="veda-error-summary__title" data-i18n="app.text.errorsTitle">
+                Check your input
+              </h2>
+              <ul>
+                <li>
+                  <a href="#input-text" id="text-error-link" data-i18n="app.text.errorEmpty"
+                    >Enter the text to convert.</a
+                  >
+                </li>
+              </ul>
+            </div>
 
-      <footer>
-        <p>
-          変換後のテキスト・ファイルは、結合文字が表示できるフォントで保存してください。
+            <div class="veda-split">
+              <section class="veda-stack" aria-labelledby="input-title">
+                <h2 class="veda-h2" id="input-title" data-i18n="app.text.inputTitle">Input</h2>
+                <div class="veda-field">
+                  <label class="veda-label" for="input-text" data-i18n="app.text.inputLabel"
+                    >Text to convert (Gandhari Unicode)</label
+                  >
+                  <p class="veda-hint" id="input-text-hint" data-i18n="app.text.inputHint">
+                    The text is converted exactly as entered. It is never trimmed or normalized.
+                  </p>
+                  <p
+                    class="veda-field-error"
+                    id="input-text-error"
+                    hidden
+                    data-i18n="app.text.errorEmpty"
+                  >
+                    Enter the text to convert.
+                  </p>
+                  <textarea
+                    id="input-text"
+                    class="veda-textarea veda-translit"
+                    rows="8"
+                    lang=""
+                    spellcheck="false"
+                    autocomplete="off"
+                    aria-describedby="input-text-hint"
+                    placeholder="Paste text here…"
+                    data-i18n-attr="placeholder:app.text.inputPlaceholder"
+                  ></textarea>
+                </div>
+                <div class="veda-actions">
+                  <button
+                    type="button"
+                    id="convert-text-btn"
+                    class="veda-button veda-button--primary btn btn-primary"
+                    data-i18n="app.text.convert"
+                  >
+                    Convert
+                  </button>
+                  <button
+                    type="button"
+                    id="clear-btn"
+                    class="veda-button btn btn-secondary"
+                    data-i18n="app.text.clear"
+                  >
+                    Clear
+                  </button>
+                </div>
+              </section>
+
+              <section class="veda-stack" aria-labelledby="output-title">
+                <h2 class="veda-h2" id="output-title" data-i18n="app.text.outputTitle">Result</h2>
+                <div id="text-status" class="text-status" role="status" aria-live="polite"></div>
+                <div class="veda-field">
+                  <label class="veda-label" for="output-text" data-i18n="app.text.outputLabel"
+                    >Converted text</label
+                  >
+                  <p class="veda-hint" id="output-text-hint" data-i18n="app.text.outputHint">
+                    Read-only. Select the text to copy it manually if the copy button does not
+                    work.
+                  </p>
+                  <textarea
+                    id="output-text"
+                    class="veda-textarea veda-translit"
+                    rows="8"
+                    lang=""
+                    spellcheck="false"
+                    readonly
+                    aria-describedby="output-text-hint"
+                  ></textarea>
+                </div>
+                <div class="veda-actions">
+                  <button
+                    type="button"
+                    id="copy-btn"
+                    class="veda-button btn btn-secondary"
+                    disabled
+                    data-i18n="app.text.copy"
+                  >
+                    Copy to clipboard
+                  </button>
+                </div>
+              </section>
+            </div>
+          </section>
+
+          <!-- DOCX file conversion -->
+          <section
+            id="docx-panel"
+            class="veda-stack"
+            role="tabpanel"
+            aria-labelledby="tab-docx"
+            hidden
+          >
+            <h2 class="veda-h2" data-i18n="app.docx.title">DOCX file</h2>
+            <div class="veda-field">
+              <label class="veda-label" for="docx-input" data-i18n="app.docx.label"
+                >Choose a DOCX file</label
+              >
+              <p class="veda-hint" id="docx-input-hint" data-i18n="app.docx.hint">
+                The file is processed in your browser and its contents are not uploaded. The page
+                still loads two helper libraries from a CDN (cdnjs).
+              </p>
+              <p
+                class="veda-field-error"
+                id="docx-input-error"
+                hidden
+                data-i18n="app.docx.invalidInline"
+              >
+                Choose a file with the .docx extension.
+              </p>
+              <input
+                type="file"
+                id="docx-input"
+                class="veda-file"
+                accept=".docx"
+                aria-describedby="docx-input-hint"
+              />
+            </div>
+            <div class="veda-actions">
+              <button
+                type="button"
+                id="convert-docx-btn"
+                class="veda-button veda-button--primary btn btn-primary"
+                disabled
+                data-i18n="app.docx.convert"
+              >
+                Convert and download
+              </button>
+            </div>
+            <div id="docx-status" class="docx-status" role="status" aria-live="polite"></div>
+          </section>
+        </div>
+      </div>
+    </main>
+
+    <footer class="veda-footer">
+      <div class="veda-container veda-footer__inner">
+        <p data-i18n="common.footer.fonts">
+          Save converted text and files with a font or editor that can display combining
+          characters.
         </p>
-        <p>
-          <a href="https://github.com/Yuzki/gandhari-unicode-convert">GitHub</a>
-        </p>
-      </footer>
-    </div>
+        <ul class="veda-footer__links">
+          <li>
+            <a
+              href="https://github.com/Yuzki/gandhari-unicode-convert"
+              data-i18n="common.footer.source"
+              >Source code on GitHub</a
+            >
+          </li>
+        </ul>
+      </div>
+    </footer>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>

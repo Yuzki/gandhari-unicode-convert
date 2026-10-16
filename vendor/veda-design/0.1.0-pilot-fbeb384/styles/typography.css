@@ -1,0 +1,212 @@
+/*
+ * VEDA AI typography (v0.1.0)
+ *
+ * Applies only inside an explicit root: `<body class="veda-root">` or any
+ * wrapper with that class. Element rules use `:where()` so they have the
+ * specificity of a bare element selector and existing app CSS wins.
+ * Nothing here reaches inside `.veda-embed` (Mirador, editors, other widgets).
+ *
+ * Language profiles follow the nearest `lang` attribute (see locales/profiles.json).
+ */
+
+.veda-root {
+  margin: 0;
+  background: var(--veda-color-bg);
+  color: var(--veda-color-text);
+  font-family: var(--veda-font-sans);
+  font-size: var(--veda-font-size-md);
+  line-height: var(--veda-line-height-latn);
+  overflow-wrap: break-word;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+/* ---- Language profiles -------------------------------------------------- */
+/*
+ * Set on the root and on elements that declare their own `lang`; descendants
+ * inherit. Components that need a fixed UI line-height set it themselves.
+ * `.veda-embed` and its descendants are excluded so widgets keep their own metrics.
+ */
+
+/* Japanese: strict kinsoku, natural wrapping; never `word-break: break-all`. */
+.veda-root:lang(ja),
+:where(.veda-root [lang]:not(.veda-embed, .veda-embed *)):lang(ja) {
+  line-height: var(--veda-line-height-ja);
+  letter-spacing: var(--veda-letter-spacing-ja);
+  line-break: strict;
+  word-break: normal;
+  text-autospace: normal;
+}
+
+/* Chinese (profile prepared for future UI; used today for quoted text). */
+.veda-root:lang(zh),
+:where(.veda-root [lang]:not(.veda-embed, .veda-embed *)):lang(zh) {
+  line-height: var(--veda-line-height-ja);
+  letter-spacing: 0;
+  line-break: strict;
+  word-break: normal;
+}
+
+/* Latin-script languages */
+.veda-root:is(:lang(en), :lang(de), :lang(fr)),
+:where(.veda-root [lang]:not(.veda-embed, .veda-embed *)):is(:lang(en), :lang(de), :lang(fr)) {
+  line-height: var(--veda-line-height-latn);
+  letter-spacing: 0;
+}
+
+/* Hyphenation only in running prose, where the browser has a dictionary for `lang`. */
+.veda-prose:lang(en),
+.veda-prose:lang(de),
+.veda-prose:lang(fr) {
+  hyphens: auto;
+}
+
+/* ---- Base elements (zero extra specificity, never inside embeds) -------- */
+
+:where(.veda-root) :where(a):not(:where(.veda-embed *)) {
+  color: var(--veda-color-link);
+  text-decoration-line: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+
+:where(.veda-root) :where(a:visited):not(:where(.veda-embed *)) {
+  color: var(--veda-color-link-visited);
+}
+
+:where(.veda-root) :where(a:hover):not(:where(.veda-embed *)) {
+  text-decoration-thickness: 2px;
+}
+
+:where(.veda-root) :where(:focus-visible):not(:where(.veda-embed *)) {
+  outline: var(--veda-focus-width) solid var(--veda-color-focus);
+  outline-offset: var(--veda-focus-offset);
+}
+
+:where(.veda-root) :where(code, kbd, samp):not(:where(.veda-embed *)) {
+  font-family: var(--veda-font-mono);
+  font-size: 0.9375em;
+  letter-spacing: 0;
+}
+
+:where(.veda-root) :where(mark):not(:where(.veda-embed *)) {
+  background: var(--veda-color-mark-bg);
+  color: var(--veda-color-mark-text);
+  padding-inline: 0.1em;
+}
+
+:where(.veda-root) :where(small):not(:where(.veda-embed *)) {
+  font-size: var(--veda-font-size-sm);
+}
+
+/* ---- Headings: restrained, stepped, safe for long titles ---------------- */
+
+.veda-h1,
+.veda-h2,
+.veda-h3,
+.veda-h4 {
+  margin-block: 0 var(--veda-space-3);
+  font-weight: 700;
+  line-height: var(--veda-line-height-heading);
+  letter-spacing: 0;
+  text-wrap: pretty;
+  overflow-wrap: break-word;
+}
+
+.veda-h1 {
+  font-size: clamp(var(--veda-font-size-2xl), 1.25rem + 1vw, var(--veda-font-size-3xl));
+}
+
+.veda-h2 {
+  font-size: var(--veda-font-size-xl);
+}
+
+.veda-h3 {
+  font-size: var(--veda-font-size-lg);
+}
+
+.veda-h4 {
+  font-size: var(--veda-font-size-md);
+}
+
+/* ---- Running text ------------------------------------------------------- */
+
+.veda-prose {
+  max-inline-size: var(--veda-measure-latn);
+}
+
+.veda-prose:lang(ja),
+.veda-prose:lang(zh) {
+  max-inline-size: var(--veda-measure-ja);
+}
+
+.veda-prose > * {
+  margin-block: 0 var(--veda-space-4);
+}
+
+.veda-prose > :last-child {
+  margin-block-end: 0;
+}
+
+.veda-lead {
+  font-size: var(--veda-font-size-lg);
+}
+
+.veda-note {
+  color: var(--veda-color-text-muted);
+  font-size: var(--veda-font-size-sm);
+}
+
+/* ---- Original text, transliteration, identifiers ------------------------ */
+
+/* Primary sources: never split per character, never clip diacritics. */
+.veda-original {
+  font-family: var(--veda-font-serif);
+  font-size: var(--veda-font-size-lg);
+  line-height: var(--veda-line-height-translit);
+  word-break: normal;
+  overflow: visible;
+}
+
+/* Keeps verse/line divisions exactly as given. */
+.veda-original--lines {
+  white-space: pre-wrap;
+}
+
+/* Romanized Sanskrit / Prakrit etc.: complete diacritic coverage first. */
+.veda-translit {
+  font-family: var(--veda-font-translit);
+  line-height: var(--veda-line-height-translit);
+  letter-spacing: 0;
+  font-variant-ligatures: none;
+}
+
+/* Inline transliteration inherits the surrounding line-height. */
+:where(span, em, i, b, a).veda-translit {
+  line-height: inherit;
+}
+
+/* Long URLs, IIIF manifest IDs, file names: allow breaking only here. */
+.veda-break-anywhere {
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+
+.veda-code {
+  font-family: var(--veda-font-mono);
+  font-size: var(--veda-font-size-sm);
+  overflow-wrap: anywhere;
+}
+
+/* Visually hidden but available to assistive technology. */
+.veda-visually-hidden {
+  position: absolute !important;
+  inline-size: 1px;
+  block-size: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}

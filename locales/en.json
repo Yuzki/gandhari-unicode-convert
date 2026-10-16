@@ -1,0 +1,113 @@
+{
+  "common": {
+    "skipLink": "Skip to main content",
+    "language": { "label": "Language" },
+    "theme": {
+      "label": "Color theme",
+      "system": "Match device setting",
+      "light": "Light",
+      "dark": "Dark"
+    },
+    "required": "(required)",
+    "noscript": "JavaScript is disabled, so the converter cannot run. Enable JavaScript and reload this page to use it.",
+    "footer": {
+      "fonts": "Save converted text and files with a font or editor that can display combining characters.",
+      "source": "Source code on GitHub"
+    }
+  },
+  "app": {
+    "pageTitle": "Gandhari Unicode Converter",
+    "title": "Gandhari Unicode Converter",
+    "lead": "Converts characters of the “Gandhari Unicode” font, which uses the Unicode Private Use Area (PUA), into standard Unicode that uses combining characters.",
+    "tabs": {
+      "label": "Conversion mode",
+      "text": "Text conversion",
+      "docx": "DOCX file conversion"
+    },
+    "text": {
+      "inputTitle": "Input",
+      "outputTitle": "Result",
+      "inputLabel": "Text to convert (Gandhari Unicode)",
+      "inputPlaceholder": "Paste text here…",
+      "inputHint": "The text is converted exactly as entered. It is never trimmed or normalized.",
+      "outputLabel": "Converted text",
+      "outputHint": "Read-only. Select the text to copy it manually if the copy button does not work.",
+      "convert": "Convert",
+      "clear": "Clear",
+      "copy": "Copy to clipboard",
+      "errorsTitle": "Check your input",
+      "errorEmpty": "Enter the text to convert."
+    },
+    "textStatus": {
+      "initial": {
+        "title": "Ready",
+        "body": "Paste text and choose Convert."
+      },
+      "converted": {
+        "title": "Converted",
+        "body": "{count} characters were converted. The result is shown below the input on narrow screens."
+      },
+      "empty": {
+        "title": "Nothing converted",
+        "body": "The input is empty."
+      },
+      "emptyKept": {
+        "title": "Nothing converted",
+        "body": "The input is empty. The previous result is still shown."
+      },
+      "cleared": {
+        "title": "Cleared",
+        "body": "The input and the result were cleared."
+      },
+      "copied": {
+        "title": "Copied",
+        "body": "The result was copied to the clipboard."
+      },
+      "copyFailed": {
+        "title": "Copy failed",
+        "body": "The browser did not allow copying. The result is selected; copy it manually."
+      },
+      "copyUnavailable": {
+        "title": "Copy not available",
+        "body": "This browser cannot copy automatically. The result is selected; copy it manually."
+      }
+    },
+    "docx": {
+      "title": "DOCX file",
+      "label": "Choose a DOCX file",
+      "hint": "The file is processed in your browser and its contents are not uploaded. The page still loads two helper libraries from a CDN (cdnjs).",
+      "convert": "Convert and download",
+      "invalidInline": "Choose a file with the .docx extension."
+    },
+    "docxStatus": {
+      "none": {
+        "title": "No file selected",
+        "body": "Choose a .docx file to enable conversion."
+      },
+      "ready": {
+        "title": "Ready",
+        "body": "{name} is selected. Choose Convert and download."
+      },
+      "invalid": {
+        "title": "Unsupported file",
+        "body": "{name} is not a .docx file. Choose a file with the .docx extension."
+      },
+      "busy": {
+        "title": "Converting",
+        "body": "Converting {name}…"
+      },
+      "success": {
+        "title": "Download started",
+        "body": "{name} was sent to your browser’s download. Check that it was saved."
+      },
+      "failure": {
+        "title": "Conversion failed",
+        "body": "{name} could not be converted. The file may be damaged or not a valid DOCX. Check the file and try again; the file is still selected."
+      },
+      "missingLibrary": {
+        "title": "Conversion unavailable",
+        "body": "A required library did not load (it is fetched from a CDN). Check your connection, reload the page and try again."
+      }
+    }
+  }
+}
