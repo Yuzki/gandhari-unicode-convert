@@ -1,0 +1,941 @@
+/*
+ * VEDA AI components (v0.1.0)
+ *
+ * Every rule is scoped to a `.veda-*` class; no element is styled globally.
+ * Requires tokens.css. Works without scripts/i18n.js and scripts/theme.js.
+ * State is expressed with native attributes (disabled, aria-invalid,
+ * aria-current, aria-selected, aria-pressed, aria-busy, hidden).
+ *
+ * Wide-layout breakpoint shared with scripts/examples.js: 64rem.
+ */
+
+/* `hidden` must win over component `display` values (never inside embeds). */
+:where(.veda-root) [hidden]:not(:where(.veda-embed *)) {
+  display: none !important;
+}
+
+/* ---- Layout ------------------------------------------------------------- */
+
+.veda-container {
+  box-sizing: border-box;
+  inline-size: 100%;
+  max-inline-size: var(--veda-content-max);
+  margin-inline: auto;
+  padding-inline: var(--veda-space-4);
+}
+
+.veda-container--wide {
+  max-inline-size: var(--veda-content-wide);
+}
+
+.veda-main {
+  display: block;
+  padding-block: var(--veda-space-5) var(--veda-space-7);
+}
+
+.veda-section {
+  margin-block: var(--veda-space-7) 0;
+}
+
+.veda-section:first-child {
+  margin-block-start: 0;
+}
+
+.veda-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--veda-space-4);
+}
+
+/* Spacing comes from `gap`, not from children's default margins. */
+.veda-stack > *,
+.veda-result > *,
+.veda-pane__body > *,
+.veda-embed__placeholder > * {
+  margin-block: 0;
+}
+
+.veda-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--veda-space-2);
+}
+
+/* Filters/sidebar beside results on wide screens; stacked in source order otherwise. */
+.veda-layout-sidebar {
+  display: grid;
+  gap: var(--veda-space-5);
+}
+
+/* Two independent panes (input/output, list/viewer). */
+.veda-split {
+  display: grid;
+  gap: var(--veda-space-4);
+}
+
+@media (min-width: 64rem) {
+  .veda-layout-sidebar {
+    grid-template-columns: minmax(14rem, 18rem) minmax(0, 1fr);
+    align-items: start;
+  }
+
+  .veda-split {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* ---- Skip link ---------------------------------------------------------- */
+
+.veda-skip-link {
+  position: absolute;
+  inset-block-start: var(--veda-space-2);
+  inset-inline-start: var(--veda-space-2);
+  z-index: var(--veda-z-overlay);
+  padding: var(--veda-space-2) var(--veda-space-4);
+  background: var(--veda-color-surface);
+  color: var(--veda-color-link);
+  font-weight: 700;
+  border: var(--veda-border-width-strong) solid var(--veda-color-action);
+  border-radius: var(--veda-radius-md);
+  transform: translateY(-300%);
+}
+
+.veda-skip-link:focus {
+  transform: none;
+}
+
+/* ---- Header, navigation, footer ----------------------------------------- */
+
+.veda-header {
+  background: var(--veda-color-surface);
+  border-block-end: var(--veda-border-width) solid var(--veda-color-border-subtle);
+}
+
+.veda-header__inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--veda-space-3) var(--veda-space-5);
+  padding-block: var(--veda-space-3);
+}
+
+.veda-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  color: var(--veda-color-text);
+  line-height: var(--veda-line-height-ui);
+  text-decoration: none;
+}
+
+.veda-brand:visited {
+  color: var(--veda-color-text);
+}
+
+.veda-brand__project {
+  color: var(--veda-color-brand);
+  font-size: var(--veda-font-size-sm);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.veda-brand__service {
+  font-size: var(--veda-font-size-lg);
+  font-weight: 700;
+}
+
+.veda-header__tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--veda-space-3);
+  margin-inline-start: auto;
+}
+
+.veda-tool {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  font-size: var(--veda-font-size-sm);
+  line-height: var(--veda-line-height-ui);
+}
+
+.veda-tool .veda-select {
+  min-inline-size: 8rem;
+}
+
+.veda-nav {
+  border-block-start: var(--veda-border-width) solid var(--veda-color-border-subtle);
+}
+
+.veda-nav__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--veda-space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.veda-nav__link {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: var(--veda-target-min);
+  padding-inline: var(--veda-space-2);
+  border-block-end: 3px solid transparent;
+  color: var(--veda-color-text);
+  line-height: var(--veda-line-height-ui);
+  text-decoration: none;
+}
+
+.veda-nav__link:visited {
+  color: var(--veda-color-text);
+}
+
+.veda-nav__link:hover {
+  text-decoration: underline;
+}
+
+.veda-nav__link[aria-current="page"] {
+  border-block-end-color: var(--veda-color-action);
+  font-weight: 700;
+}
+
+.veda-footer {
+  margin-block-start: var(--veda-space-7);
+  padding-block: var(--veda-space-5);
+  background: var(--veda-color-surface-subtle);
+  border-block-start: var(--veda-border-width) solid var(--veda-color-border-subtle);
+  font-size: var(--veda-font-size-sm);
+}
+
+.veda-footer__inner {
+  display: grid;
+  gap: var(--veda-space-3);
+}
+
+.veda-footer__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--veda-space-1) var(--veda-space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.veda-footer__links a {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: var(--veda-target-min);
+}
+
+/* ---- Buttons ------------------------------------------------------------ */
+
+.veda-button {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--veda-space-2);
+  min-block-size: var(--veda-target-min);
+  min-inline-size: var(--veda-target-min);
+  margin: 0;
+  padding: var(--veda-space-2) var(--veda-space-4);
+  border: var(--veda-border-width) solid var(--veda-color-action);
+  border-radius: var(--veda-radius-md);
+  background: var(--veda-color-surface);
+  color: var(--veda-color-action);
+  font: inherit;
+  font-weight: 600;
+  line-height: var(--veda-line-height-ui);
+  letter-spacing: inherit;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color var(--veda-duration), color var(--veda-duration);
+}
+
+.veda-button:visited {
+  color: var(--veda-color-action);
+}
+
+.veda-button:hover {
+  background: var(--veda-color-surface-subtle);
+}
+
+.veda-button--primary,
+.veda-button--primary:visited {
+  background: var(--veda-color-action);
+  color: var(--veda-color-on-action);
+}
+
+.veda-button--primary:hover {
+  background: var(--veda-color-action-hover);
+  border-color: var(--veda-color-action-hover);
+}
+
+.veda-button--quiet {
+  border-color: transparent;
+  background: transparent;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.veda-button--danger,
+.veda-button--danger:visited {
+  border-color: var(--veda-color-danger);
+  color: var(--veda-color-danger);
+}
+
+.veda-button[aria-pressed="true"] {
+  background: var(--veda-color-info-bg);
+  box-shadow: inset 0 0 0 1px var(--veda-color-action);
+}
+
+.veda-button:disabled,
+.veda-button[aria-disabled="true"] {
+  border-style: dashed;
+  border-color: var(--veda-color-border);
+  background: var(--veda-color-surface-subtle);
+  color: var(--veda-color-text-muted);
+  cursor: not-allowed;
+}
+
+.veda-button[aria-busy="true"] {
+  cursor: progress;
+}
+
+/* ---- Form controls ------------------------------------------------------ */
+
+.veda-field {
+  display: grid;
+  gap: var(--veda-space-1);
+  min-inline-size: 0;
+}
+
+.veda-label {
+  font-weight: 600;
+  line-height: var(--veda-line-height-ui);
+}
+
+.veda-required {
+  color: var(--veda-color-danger);
+  font-size: var(--veda-font-size-sm);
+  font-weight: 600;
+}
+
+.veda-hint {
+  margin: 0;
+  color: var(--veda-color-text-muted);
+  font-size: var(--veda-font-size-sm);
+}
+
+.veda-field-error {
+  margin: 0;
+  color: var(--veda-color-danger);
+  font-size: var(--veda-font-size-sm);
+  font-weight: 600;
+}
+
+.veda-input,
+.veda-select,
+.veda-textarea {
+  box-sizing: border-box;
+  inline-size: 100%;
+  min-block-size: var(--veda-target-min);
+  margin: 0;
+  padding: var(--veda-space-2) var(--veda-space-3);
+  border: var(--veda-border-width) solid var(--veda-color-border);
+  border-radius: var(--veda-radius-md);
+  background: var(--veda-color-surface);
+  color: var(--veda-color-text);
+  font: inherit;
+  line-height: var(--veda-line-height-ui);
+  letter-spacing: 0;
+}
+
+.veda-textarea {
+  min-block-size: 8rem;
+  line-height: var(--veda-line-height-translit);
+  resize: vertical;
+}
+
+.veda-input[aria-invalid="true"],
+.veda-select[aria-invalid="true"],
+.veda-textarea[aria-invalid="true"] {
+  border: var(--veda-border-width-strong) solid var(--veda-color-danger);
+}
+
+.veda-input:disabled,
+.veda-select:disabled,
+.veda-textarea:disabled {
+  border-style: dashed;
+  background: var(--veda-color-surface-subtle);
+  color: var(--veda-color-text-muted);
+  cursor: not-allowed;
+}
+
+.veda-input[readonly],
+.veda-textarea[readonly] {
+  background: var(--veda-color-surface-subtle);
+}
+
+.veda-fieldset {
+  min-inline-size: 0;
+  margin: 0;
+  padding: var(--veda-space-3) var(--veda-space-4) var(--veda-space-4);
+  border: var(--veda-border-width) solid var(--veda-color-border-subtle);
+  border-radius: var(--veda-radius-md);
+}
+
+.veda-legend {
+  padding-inline: var(--veda-space-1);
+  font-weight: 700;
+}
+
+/* Checkbox / radio: the whole label is the target. */
+.veda-check {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--veda-space-2);
+  min-block-size: var(--veda-target-min);
+  padding-block: var(--veda-space-2);
+  box-sizing: border-box;
+  line-height: var(--veda-line-height-ui);
+  cursor: pointer;
+}
+
+.veda-check input {
+  flex: none;
+  inline-size: 1.25rem;
+  block-size: 1.25rem;
+  margin: 0;
+  accent-color: var(--veda-color-action);
+}
+
+.veda-check:has(input:disabled) {
+  color: var(--veda-color-text-muted);
+  cursor: not-allowed;
+}
+
+.veda-file::file-selector-button {
+  min-block-size: var(--veda-target-min);
+  margin-inline-end: var(--veda-space-3);
+  padding: var(--veda-space-2) var(--veda-space-4);
+  border: var(--veda-border-width) solid var(--veda-color-action);
+  border-radius: var(--veda-radius-md);
+  background: var(--veda-color-surface);
+  color: var(--veda-color-action);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* The native control has a wide intrinsic minimum; let it shrink to 320px. */
+.veda-file {
+  box-sizing: border-box;
+  inline-size: 100%;
+  min-inline-size: 0;
+  max-inline-size: 100%;
+  font: inherit;
+}
+
+/* ---- Search, filters, results ------------------------------------------ */
+
+.veda-search {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--veda-space-2) var(--veda-space-3);
+}
+
+.veda-search > .veda-field {
+  flex: 1 1 16rem;
+}
+
+.veda-chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--veda-space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.veda-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--veda-space-2);
+  min-block-size: var(--veda-target-min);
+  padding: var(--veda-space-1) var(--veda-space-3);
+  border: var(--veda-border-width) solid var(--veda-color-action);
+  border-radius: 999px;
+  background: var(--veda-color-info-bg);
+  color: var(--veda-color-text);
+  font: inherit;
+  font-size: var(--veda-font-size-sm);
+  line-height: var(--veda-line-height-ui);
+  cursor: pointer;
+}
+
+.veda-chip__remove {
+  font-weight: 700;
+}
+
+.veda-result-summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--veda-space-2) var(--veda-space-4);
+  margin-block-end: var(--veda-space-3);
+}
+
+.veda-count {
+  margin: 0;
+  font-weight: 700;
+}
+
+.veda-results {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-block-start: var(--veda-border-width) solid var(--veda-color-border-subtle);
+}
+
+.veda-result {
+  display: grid;
+  gap: var(--veda-space-2);
+  padding-block: var(--veda-space-4);
+  border-block-end: var(--veda-border-width) solid var(--veda-color-border-subtle);
+}
+
+.veda-result__title {
+  margin: 0;
+  font-size: var(--veda-font-size-lg);
+  font-weight: 700;
+  line-height: var(--veda-line-height-heading);
+}
+
+.veda-result__snippet {
+  margin: 0;
+}
+
+/* Bibliographic metadata: label/value pairs that stay readable when long. */
+.veda-meta {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: var(--veda-space-1) var(--veda-space-3);
+  margin: 0;
+  font-size: var(--veda-font-size-sm);
+}
+
+.veda-meta dt {
+  color: var(--veda-color-text-muted);
+  font-weight: 600;
+}
+
+.veda-meta dd {
+  margin: 0;
+  min-inline-size: 0;
+}
+
+@media (max-width: 30rem) {
+  .veda-meta {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .veda-meta dd + dt {
+    margin-block-start: var(--veda-space-2);
+  }
+}
+
+.veda-source {
+  color: var(--veda-color-text-muted);
+  font-size: var(--veda-font-size-sm);
+}
+
+/* ---- Cards -------------------------------------------------------------- */
+
+.veda-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr));
+  gap: var(--veda-space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.veda-card {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: var(--veda-space-2);
+  min-inline-size: 0;
+  padding: var(--veda-space-4);
+  border: var(--veda-border-width) solid var(--veda-color-border-subtle);
+  border-radius: var(--veda-radius-md);
+  background: var(--veda-color-surface);
+  box-shadow: var(--veda-shadow-sm);
+}
+
+.veda-card > * {
+  margin-block: 0;
+}
+
+.veda-card__title {
+  margin: 0;
+  font-size: var(--veda-font-size-lg);
+  line-height: var(--veda-line-height-heading);
+}
+
+.veda-card__footer {
+  margin-block-start: auto;
+  padding-block-start: var(--veda-space-2);
+}
+
+/* ---- Badges ------------------------------------------------------------- */
+
+.veda-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--veda-space-1);
+  padding: 0.0625rem var(--veda-space-2);
+  border: var(--veda-border-width) solid currentColor;
+  border-radius: var(--veda-radius-sm);
+  background: var(--veda-color-surface);
+  color: var(--veda-color-text-muted);
+  font-size: var(--veda-font-size-sm);
+  font-weight: 600;
+  line-height: var(--veda-line-height-ui);
+  letter-spacing: 0;
+  white-space: nowrap;
+}
+
+.veda-badge--info {
+  background: var(--veda-color-info-bg);
+  color: var(--veda-color-info);
+}
+
+.veda-badge--success {
+  background: var(--veda-color-success-bg);
+  color: var(--veda-color-success);
+}
+
+.veda-badge--warning {
+  background: var(--veda-color-warning-bg);
+  color: var(--veda-color-warning);
+}
+
+.veda-badge--danger {
+  background: var(--veda-color-danger-bg);
+  color: var(--veda-color-danger);
+}
+
+.veda-badge--ai {
+  background: var(--veda-color-ai-bg);
+  color: var(--veda-color-ai);
+}
+
+/* ---- Status messages ---------------------------------------------------- */
+/* Each status has a visible text label; color is only a secondary cue. */
+
+.veda-status {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--veda-space-3);
+  padding: var(--veda-space-3) var(--veda-space-4);
+  border: var(--veda-border-width) solid var(--veda-color-border-subtle);
+  border-inline-start-width: 4px;
+  border-radius: var(--veda-radius-md);
+  background: var(--veda-color-surface-subtle);
+  color: var(--veda-color-text);
+}
+
+.veda-status__body {
+  display: grid;
+  gap: var(--veda-space-1);
+  min-inline-size: 0;
+}
+
+.veda-status__title {
+  margin: 0;
+  font-weight: 700;
+}
+
+.veda-status__body > p {
+  margin: 0;
+}
+
+.veda-status__icon {
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  inline-size: 1.5rem;
+  block-size: 1.5rem;
+  border-radius: 50%;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.veda-status--info {
+  border-color: var(--veda-color-info);
+  background: var(--veda-color-info-bg);
+}
+
+.veda-status--success {
+  border-color: var(--veda-color-success);
+  background: var(--veda-color-success-bg);
+}
+
+.veda-status--warning {
+  border-color: var(--veda-color-warning);
+  background: var(--veda-color-warning-bg);
+}
+
+.veda-status--error {
+  border-color: var(--veda-color-danger);
+  background: var(--veda-color-danger-bg);
+}
+
+.veda-status--info .veda-status__title,
+.veda-status--info .veda-status__icon {
+  color: var(--veda-color-info);
+}
+
+.veda-status--success .veda-status__title,
+.veda-status--success .veda-status__icon {
+  color: var(--veda-color-success);
+}
+
+.veda-status--warning .veda-status__title,
+.veda-status--warning .veda-status__icon {
+  color: var(--veda-color-warning);
+}
+
+.veda-status--error .veda-status__title,
+.veda-status--error .veda-status__icon {
+  color: var(--veda-color-danger);
+}
+
+.veda-spinner {
+  flex: none;
+  box-sizing: border-box;
+  display: inline-block;
+  inline-size: 1.25rem;
+  block-size: 1.25rem;
+  border: 3px solid currentColor;
+  border-inline-end-color: transparent;
+  border-radius: 50%;
+  animation: veda-spin 0.9s linear infinite;
+}
+
+@keyframes veda-spin {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .veda-spinner {
+    animation: none;
+    border-inline-end-color: currentColor;
+    border-style: dotted;
+  }
+}
+
+.veda-error-summary {
+  padding: var(--veda-space-4);
+  border: var(--veda-border-width-strong) solid var(--veda-color-danger);
+  border-radius: var(--veda-radius-md);
+  background: var(--veda-color-danger-bg);
+}
+
+.veda-error-summary__title {
+  margin: 0 0 var(--veda-space-2);
+  color: var(--veda-color-danger);
+  font-size: var(--veda-font-size-lg);
+}
+
+.veda-error-summary ul {
+  margin: 0;
+  padding-inline-start: var(--veda-space-5);
+}
+
+/* ---- Research material vs. AI-generated content ------------------------- */
+
+.veda-ai {
+  display: grid;
+  gap: var(--veda-space-2);
+  padding: var(--veda-space-3) var(--veda-space-4);
+  border: var(--veda-border-width) dashed var(--veda-color-ai);
+  border-inline-start: 4px solid var(--veda-color-ai);
+  border-radius: var(--veda-radius-md);
+  background: var(--veda-color-ai-bg);
+}
+
+.veda-ai__label {
+  margin: 0;
+  color: var(--veda-color-ai);
+  font-size: var(--veda-font-size-sm);
+  font-weight: 700;
+}
+
+.veda-ai > p {
+  margin: 0;
+}
+
+.veda-quote {
+  margin: 0;
+  padding: var(--veda-space-3) var(--veda-space-4);
+  border-inline-start: 4px solid var(--veda-color-border);
+  background: var(--veda-color-surface);
+}
+
+/* ---- Embedded specialist widgets (Mirador, editors, canvases) ----------- */
+/*
+ * Common CSS stops at this boundary: base element rules exclude descendants,
+ * and inherited text settings are reset so the widget's own CSS controls it.
+ */
+
+.veda-embed {
+  position: relative;
+  isolation: isolate;
+  min-block-size: 20rem;
+  min-inline-size: 0;
+  border: var(--veda-border-width) solid var(--veda-color-border);
+  border-radius: var(--veda-radius-md);
+  background: var(--veda-color-surface-subtle);
+  line-height: normal;
+  letter-spacing: normal;
+  overflow: auto;
+}
+
+.veda-embed__placeholder {
+  display: grid;
+  place-content: center;
+  gap: var(--veda-space-2);
+  box-sizing: border-box;
+  min-block-size: inherit;
+  padding: var(--veda-space-5);
+  color: var(--veda-color-text-muted);
+  line-height: var(--veda-line-height-latn);
+  text-align: center;
+}
+
+/* ---- Panes and tabs (workbench) ----------------------------------------- */
+
+.veda-workbench {
+  display: grid;
+  gap: var(--veda-space-4);
+}
+
+@media (min-width: 64rem) {
+  .veda-workbench {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .veda-workbench__tabs {
+    display: none;
+  }
+}
+
+.veda-pane {
+  display: flex;
+  flex-direction: column;
+  min-inline-size: 0;
+  border: var(--veda-border-width) solid var(--veda-color-border-subtle);
+  border-radius: var(--veda-radius-md);
+  background: var(--veda-color-surface);
+}
+
+.veda-pane__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--veda-space-2);
+  padding: var(--veda-space-2) var(--veda-space-4);
+  border-block-end: var(--veda-border-width) solid var(--veda-color-border-subtle);
+}
+
+.veda-pane__title {
+  margin: 0;
+  font-size: var(--veda-font-size-md);
+  font-weight: 700;
+  line-height: var(--veda-line-height-heading);
+}
+
+.veda-pane__body {
+  display: grid;
+  gap: var(--veda-space-3);
+  padding: var(--veda-space-4);
+  min-inline-size: 0;
+  overflow: auto;
+}
+
+.veda-tabs {
+  display: flex;
+  gap: var(--veda-space-1);
+  overflow-x: auto;
+  border-block-end: var(--veda-border-width) solid var(--veda-color-border);
+}
+
+.veda-tab {
+  flex: none;
+  min-block-size: var(--veda-target-min);
+  padding: var(--veda-space-2) var(--veda-space-3);
+  border: 0;
+  border-block-end: 3px solid transparent;
+  background: transparent;
+  color: var(--veda-color-text);
+  font: inherit;
+  line-height: var(--veda-line-height-ui);
+  cursor: pointer;
+}
+
+.veda-tab[aria-selected="true"] {
+  border-block-end-color: var(--veda-color-action);
+  font-weight: 700;
+}
+
+/* ---- Windows High Contrast / forced colors ------------------------------ */
+
+@media (forced-colors: active) {
+  .veda-button,
+  .veda-chip,
+  .veda-badge,
+  .veda-status,
+  .veda-ai,
+  .veda-card,
+  .veda-pane,
+  .veda-embed {
+    border-color: CanvasText;
+  }
+
+  .veda-button--primary {
+    border: var(--veda-border-width-strong) solid ButtonText;
+  }
+
+  .veda-button:disabled,
+  .veda-button[aria-disabled="true"] {
+    border-color: GrayText;
+    color: GrayText;
+  }
+
+  .veda-nav__link[aria-current="page"],
+  .veda-tab[aria-selected="true"] {
+    border-block-end-color: Highlight;
+  }
+
+  .veda-skip-link,
+  .veda-status__icon {
+    forced-color-adjust: auto;
+  }
+
+  :where(.veda-root) :where(:focus-visible):not(:where(.veda-embed *)) {
+    outline-color: Highlight;
+  }
+}
