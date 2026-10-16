@@ -1,0 +1,113 @@
+{
+  "common": {
+    "skipLink": "本文へ移動",
+    "language": { "label": "表示言語" },
+    "theme": {
+      "label": "配色",
+      "system": "端末の設定に合わせる",
+      "light": "ライト",
+      "dark": "ダーク"
+    },
+    "required": "（必須）",
+    "noscript": "JavaScript が無効なため、変換ツールは動作しません。JavaScript を有効にしてページを再読み込みしてください。",
+    "footer": {
+      "fonts": "変換後のテキスト・ファイルは、結合文字が表示できるフォントやエディタで保存してください。",
+      "source": "GitHub のソースコード"
+    }
+  },
+  "app": {
+    "pageTitle": "Gandhari Unicode 変換ツール",
+    "title": "Gandhari Unicode 変換ツール",
+    "lead": "Unicode の私用領域（PUA）を使った「Gandhari Unicode」フォントの文字を、結合文字を用いた標準 Unicode に変換します。",
+    "tabs": {
+      "label": "変換の種類",
+      "text": "テキスト変換",
+      "docx": "DOCX ファイル変換"
+    },
+    "text": {
+      "inputTitle": "入力",
+      "outputTitle": "結果",
+      "inputLabel": "変換前テキスト（Gandhari Unicode）",
+      "inputPlaceholder": "ここにテキストを貼り付けてください…",
+      "inputHint": "入力した文字はそのまま変換されます。空白の除去や正規化は行いません。",
+      "outputLabel": "変換後テキスト",
+      "outputHint": "読み取り専用です。コピーボタンが使えない場合は、テキストを選択して手動でコピーしてください。",
+      "convert": "変換",
+      "clear": "クリア",
+      "copy": "クリップボードにコピー",
+      "errorsTitle": "入力内容を確認してください",
+      "errorEmpty": "変換するテキストを入力してください。"
+    },
+    "textStatus": {
+      "initial": {
+        "title": "準備完了",
+        "body": "テキストを貼り付けて「変換」を押してください。"
+      },
+      "converted": {
+        "title": "変換しました",
+        "body": "{count} 文字を変換しました。幅の狭い画面では、結果は入力欄の下に表示されます。"
+      },
+      "empty": {
+        "title": "変換していません",
+        "body": "入力が空です。"
+      },
+      "emptyKept": {
+        "title": "変換していません",
+        "body": "入力が空です。前回の結果はそのまま表示しています。"
+      },
+      "cleared": {
+        "title": "クリアしました",
+        "body": "入力と結果を消去しました。"
+      },
+      "copied": {
+        "title": "コピーしました",
+        "body": "結果をクリップボードにコピーしました。"
+      },
+      "copyFailed": {
+        "title": "コピーできませんでした",
+        "body": "ブラウザがコピーを許可しませんでした。結果を選択したので、手動でコピーしてください。"
+      },
+      "copyUnavailable": {
+        "title": "自動コピーは使えません",
+        "body": "このブラウザでは自動コピーができません。結果を選択したので、手動でコピーしてください。"
+      }
+    },
+    "docx": {
+      "title": "DOCX ファイル",
+      "label": "DOCX ファイルを選択",
+      "hint": "ファイルはブラウザ内で処理され、内容は送信されません。ただし、このページは補助ライブラリ 2 つを CDN（cdnjs）から読み込みます。",
+      "convert": "変換してダウンロード",
+      "invalidInline": "拡張子が .docx のファイルを選択してください。"
+    },
+    "docxStatus": {
+      "none": {
+        "title": "ファイル未選択",
+        "body": ".docx ファイルを選択すると変換できます。"
+      },
+      "ready": {
+        "title": "準備完了",
+        "body": "{name} を選択しました。「変換してダウンロード」を押してください。"
+      },
+      "invalid": {
+        "title": "対応していないファイル",
+        "body": "{name} は .docx ファイルではありません。拡張子が .docx のファイルを選択してください。"
+      },
+      "busy": {
+        "title": "変換中",
+        "body": "{name} を変換しています…"
+      },
+      "success": {
+        "title": "ダウンロードを開始しました",
+        "body": "{name} をブラウザのダウンロードに渡しました。保存されたことを確認してください。"
+      },
+      "failure": {
+        "title": "変換に失敗しました",
+        "body": "{name} を変換できませんでした。ファイルが壊れているか、DOCX 形式ではない可能性があります。ファイルを確認して再試行してください。ファイルは選択されたままです。"
+      },
+      "missingLibrary": {
+        "title": "変換できません",
+        "body": "必要なライブラリが読み込まれていません（CDN から取得します）。接続を確認し、ページを再読み込みしてからやり直してください。"
+      }
+    }
+  }
+}
