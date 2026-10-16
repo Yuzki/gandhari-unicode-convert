@@ -76,6 +76,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const docxInputError = document.getElementById("docx-input-error");
   const convertDocxBtn = document.getElementById("convert-docx-btn");
   const docxStatus = document.getElementById("docx-status");
+  const docxPanel = document.getElementById("docx-panel");
 
   // Dynamic status is stored as { kind, key, params } and rendered on demand,
   // so it can be re-rendered when the language changes.
@@ -297,7 +298,13 @@ document.addEventListener("DOMContentLoaded", function () {
     } finally {
       docxBusy = false;
       syncDocxControls();
-      if (hadFocus && !convertDocxBtn.disabled) convertDocxBtn.focus();
+      // Restore focus only if disabling the button displaced it and the user
+      // has not deliberately moved elsewhere.
+      const active = document.activeElement;
+      const displaced = !active || active === convertDocxBtn || active === document.body;
+      if (hadFocus && displaced && !docxPanel.hidden && !convertDocxBtn.disabled) {
+        convertDocxBtn.focus();
+      }
     }
   });
 

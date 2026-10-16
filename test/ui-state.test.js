@@ -194,6 +194,37 @@ describe("DOCX states", () => {
     assert.ok(els["docx-status"].textContent.includes("long ファイル_converted.docx"));
   });
 
+  it("does not steal focus when the user moves away before completion", async () => {
+    const pending = deferred();
+    const { els, document } = createApp({
+      convertDocxFile: (f) => pending.promise.then(() => f.name),
+    });
+    await els["tab-docx"].dispatch("click");
+    await pick(els, file("a.docx"));
+    els["convert-docx-btn"].focus();
+    const running = els["convert-docx-btn"].dispatch("click");
+
+    els["tab-text"].focus();
+    await els["tab-text"].dispatch("click");
+    pending.resolve();
+    await running;
+    assert.equal(document.activeElement, els["tab-text"]);
+  });
+
+  it("restores focus to the button when it stays displaced on the DOCX panel", async () => {
+    const pending = deferred();
+    const { els, document } = createApp({
+      convertDocxFile: (f) => pending.promise.then(() => f.name),
+    });
+    await els["tab-docx"].dispatch("click");
+    await pick(els, file("a.docx"));
+    els["convert-docx-btn"].focus();
+    const running = els["convert-docx-btn"].dispatch("click");
+    pending.resolve();
+    await running;
+    assert.equal(document.activeElement, els["convert-docx-btn"]);
+  });
+
   it("keeps the file selected and allows a retry after a failure", async () => {
     let fail = true;
     const { els } = createApp({
