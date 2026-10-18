@@ -35,3 +35,21 @@
   overflow-wrap: anywhere;
   overflow-y: auto;
 }
+
+/* Short result note under the input; only needed while the result sits below it. */
+.text-notice {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.text-notice a {
+  display: inline-block;
+  min-block-size: var(--veda-target-min);
+  line-height: var(--veda-target-min);
+}
+
+@media (min-width: 64rem) {
+  .text-notice {
+    display: none;
+  }
+}

@@ -5,7 +5,8 @@
  *   data-i18n="key"                    replaces textContent (always as text)
  *   data-i18n-attr="attr:key;attr:key" sets attributes (aria-label, placeholder, title...)
  *   <select data-veda-language>        language switcher; its nearest
- *                                      [data-veda-requires-js] container is un-hidden
+ *                                      [data-veda-requires-js] container is un-hidden,
+ *                                      and so is the enclosing [data-veda-settings]
  * Language priority: ?lang= > saved choice > <html lang> > profiles.default.
  * Unsupported languages follow their `fallback` chain in locales/profiles.json.
  * A message missing in the active language falls back along the same chain and
@@ -163,6 +164,7 @@
   function bindControls() {
     for (const control of document.querySelectorAll("select[data-veda-language]")) {
       control.closest("[data-veda-requires-js]")?.removeAttribute("hidden");
+      control.closest("[data-veda-settings]")?.removeAttribute("hidden");
       control.addEventListener("change", () => {
         setLanguage(control.value).catch(report);
       });

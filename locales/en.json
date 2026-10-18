@@ -2,6 +2,7 @@
   "common": {
     "skipLink": "Skip to main content",
     "language": { "label": "Language" },
+    "settings": { "label": "Display settings" },
     "theme": {
       "label": "Color theme",
       "system": "Match device setting",
@@ -37,8 +38,12 @@
       "convert": "Convert",
       "clear": "Clear",
       "copy": "Copy to clipboard",
+      "jumpToResult": "Go to result",
       "errorsTitle": "Check your input",
       "errorEmpty": "Enter the text to convert."
+    },
+    "textNotice": {
+      "converted": "Converted {count} characters."
     },
     "textStatus": {
       "initial": {

@@ -5,17 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="color-scheme" content="light dark" />
     <title data-i18n="app.pageTitle">Gandhari Unicode Converter</title>
-    <link rel="stylesheet" href="vendor/veda-design/0.1.0-pilot-0b90d3c/styles/tokens.css" />
-    <link rel="stylesheet" href="vendor/veda-design/0.1.0-pilot-0b90d3c/styles/typography.css" />
-    <link rel="stylesheet" href="vendor/veda-design/0.1.0-pilot-0b90d3c/styles/components.css" />
+    <link rel="stylesheet" href="vendor/veda-design/0.1.0-pilot-9d65cf4/styles/tokens.css" />
+    <link rel="stylesheet" href="vendor/veda-design/0.1.0-pilot-9d65cf4/styles/typography.css" />
+    <link rel="stylesheet" href="vendor/veda-design/0.1.0-pilot-9d65cf4/styles/components.css" />
     <link rel="stylesheet" href="css/style.css" />
-    <script src="vendor/veda-design/0.1.0-pilot-0b90d3c/scripts/theme.js"></script>
+    <script src="vendor/veda-design/0.1.0-pilot-9d65cf4/scripts/theme.js"></script>
     <script
-      src="vendor/veda-design/0.1.0-pilot-0b90d3c/scripts/i18n.js"
+      src="vendor/veda-design/0.1.0-pilot-9d65cf4/scripts/i18n.js"
       data-veda-locales="../../../../locales/"
       defer
     ></script>
-    <script src="vendor/veda-design/0.1.0-pilot-0b90d3c/scripts/report.js" defer></script>
+    <script src="vendor/veda-design/0.1.0-pilot-9d65cf4/scripts/report.js" defer></script>
+    <script src="vendor/veda-design/0.1.0-pilot-9d65cf4/scripts/settings.js" defer></script>
   </head>
   <body class="veda-root">
     <a class="veda-skip-link" href="#main" data-i18n="common.skipLink"
@@ -30,25 +31,34 @@
           >
         </p>
         <div class="veda-header__tools">
-          <div class="veda-tool" data-veda-requires-js hidden>
-            <label class="veda-label" for="veda-language" data-i18n="common.language.label"
-              >Language</label
-            >
-            <select class="veda-select" id="veda-language" data-veda-language>
-              <option value="en" lang="en">English</option>
-              <option value="ja" lang="ja">日本語</option>
-            </select>
-          </div>
-          <div class="veda-tool" data-veda-requires-js hidden>
-            <label class="veda-label" for="veda-theme" data-i18n="common.theme.label"
-              >Color theme</label
-            >
-            <select class="veda-select" id="veda-theme" data-veda-theme-control>
-              <option value="system" data-i18n="common.theme.system">Match device setting</option>
-              <option value="light" data-i18n="common.theme.light">Light</option>
-              <option value="dark" data-i18n="common.theme.dark">Dark</option>
-            </select>
-          </div>
+          <details class="veda-settings" data-veda-settings hidden>
+            <summary class="veda-settings__summary">
+              <span data-i18n="common.settings.label">Display settings</span>
+            </summary>
+            <div class="veda-settings__panel">
+              <div class="veda-tool" data-veda-requires-js hidden>
+                <label class="veda-label" for="veda-language" data-i18n="common.language.label"
+                  >Language</label
+                >
+                <select class="veda-select" id="veda-language" data-veda-language>
+                  <option value="en" lang="en">English</option>
+                  <option value="ja" lang="ja">日本語</option>
+                </select>
+              </div>
+              <div class="veda-tool" data-veda-requires-js hidden>
+                <label class="veda-label" for="veda-theme" data-i18n="common.theme.label"
+                  >Color theme</label
+                >
+                <select class="veda-select" id="veda-theme" data-veda-theme-control>
+                  <option value="system" data-i18n="common.theme.system">
+                    Match device setting
+                  </option>
+                  <option value="light" data-i18n="common.theme.light">Light</option>
+                  <option value="dark" data-i18n="common.theme.dark">Dark</option>
+                </select>
+              </div>
+            </div>
+          </details>
         </div>
       </div>
     </header>
@@ -170,10 +180,18 @@
                     Clear
                   </button>
                 </div>
+                <p class="veda-note text-notice" id="text-notice" hidden>
+                  <span id="text-notice-message"></span>
+                  <a href="#output-title" id="text-notice-link" data-i18n="app.text.jumpToResult"
+                    >Go to result</a
+                  >
+                </p>
               </section>
 
               <section class="veda-stack" aria-labelledby="output-title">
-                <h2 class="veda-h2" id="output-title" data-i18n="app.text.outputTitle">Result</h2>
+                <h2 class="veda-h2" id="output-title" tabindex="-1" data-i18n="app.text.outputTitle">
+                  Result
+                </h2>
                 <div id="text-status" class="text-status" role="status" aria-live="polite"></div>
                 <div class="veda-field">
                   <label class="veda-label" for="output-text" data-i18n="app.text.outputLabel"
