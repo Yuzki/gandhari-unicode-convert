@@ -52,7 +52,7 @@ node --test
 
 ## Shared design
 
-The interface uses a pinned snapshot of the VEDA AI shared design assets (unreleased 0.1.0, commit `0b90d3c2a06d58212f4fa14965cec31b8ea99dde`) in [`vendor/veda-design/0.1.0-pilot-0b90d3c/`](vendor/veda-design/0.1.0-pilot-0b90d3c/). The upstream repository is private. The copies are unmodified; provenance, SHA-256 values, terms status and update/rollback steps are in [`SOURCE.md`](vendor/veda-design/0.1.0-pilot-0b90d3c/SOURCE.md). Local adjustments are in `css/style.css`. Adoption issue: <https://github.com/Yuzki/gandhari-unicode-convert/issues/6>.
+The interface uses a pinned snapshot of the VEDA AI shared design assets (unreleased 0.1.0, commit `9d65cf437a8ed34c70647f5dce19193bbb36e323`) in [`vendor/veda-design/0.1.0-pilot-9d65cf4/`](vendor/veda-design/0.1.0-pilot-9d65cf4/). The upstream repository is private. The copies are unmodified; provenance, SHA-256 values, terms status and update/rollback steps are in [`SOURCE.md`](vendor/veda-design/0.1.0-pilot-9d65cf4/SOURCE.md). Local adjustments are in `css/style.css`. Adoption issue: <https://github.com/Yuzki/gandhari-unicode-convert/issues/6>.
 
 The footer "Report a problem" link opens the shared `veda-ai-feedback` issue form with `service=Gandhari Converter`. The vendored `scripts/report.js` adds the current page (origin and path only, no query or hash); without JavaScript the link still carries `service`. Reports become public GitHub issues.
 
