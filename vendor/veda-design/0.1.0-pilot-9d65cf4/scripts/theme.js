@@ -4,7 +4,8 @@
  *
  * Load in <head> without `defer` so a saved choice applies before first paint.
  * Markup: <select data-veda-theme-control> with options system | light | dark.
- * Its nearest [data-veda-requires-js] container is un-hidden.
+ * Its nearest [data-veda-requires-js] container is un-hidden, and so is the
+ * enclosing [data-veda-settings] (display settings <details>) if any.
  * The choice is stored when possible; if storage fails it still applies.
  *
  * API: window.VedaTheme.set("system" | "light" | "dark"), .get()
@@ -54,13 +55,16 @@
     document.dispatchEvent(new CustomEvent("veda:themechange", { detail: { theme } }));
   }
 
-  // An explicit attribute in the markup wins over the saved choice.
-  if (!root.hasAttribute("data-veda-theme")) apply(read());
+  // A valid explicit attribute in the markup wins over the saved choice.
+  // An invalid one is dropped so get() and the select agree with the page.
+  const initial = root.getAttribute("data-veda-theme");
+  if (initial !== "light" && initial !== "dark") apply(read());
 
   function bind() {
     for (const control of document.querySelectorAll("select[data-veda-theme-control]")) {
       control.value = get();
       control.closest("[data-veda-requires-js]")?.removeAttribute("hidden");
+      control.closest("[data-veda-settings]")?.removeAttribute("hidden");
       control.addEventListener("change", () => set(control.value));
     }
   }

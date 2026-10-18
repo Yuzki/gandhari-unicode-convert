@@ -7,7 +7,7 @@ const vm = require("vm");
 const { loadLocale } = require("./helpers/dom-stub");
 
 const ROOT = path.resolve(__dirname, "..");
-const VENDOR = "vendor/veda-design/0.1.0-pilot-0b90d3c";
+const VENDOR = "vendor/veda-design/0.1.0-pilot-9d65cf4";
 const html = fs.readFileSync(path.join(ROOT, "index.html"), "utf8");
 const en = loadLocale("en");
 
@@ -100,7 +100,7 @@ describe("footer report link", () => {
 describe("vendored design assets", () => {
   it("exist for every vendored path referenced by index.html", () => {
     const paths = [...html.matchAll(/(?:href|src)="(vendor\/[^"]+)"/g)].map((m) => m[1]);
-    assert.ok(paths.length >= 6);
+    assert.ok(paths.length >= 7);
     for (const p of paths) assert.ok(fs.existsSync(path.join(ROOT, p)), p);
     assert.ok(paths.some((p) => p.endsWith("scripts/report.js")));
   });
@@ -108,7 +108,7 @@ describe("vendored design assets", () => {
   it("match the SHA-256 values in SOURCE.md", () => {
     const source = fs.readFileSync(path.join(ROOT, VENDOR, "SOURCE.md"), "utf8");
     const rows = [...source.matchAll(/^([0-9a-f]{64})  (\S+)$/gm)];
-    assert.equal(rows.length, 6);
+    assert.equal(rows.length, 7);
     for (const [, hash, file] of rows) {
       const data = fs.readFileSync(path.join(ROOT, VENDOR, file));
       assert.equal(crypto.createHash("sha256").update(data).digest("hex"), hash, file);
