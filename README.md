@@ -52,7 +52,7 @@ node --test
 
 ## Shared design
 
-The interface uses a pinned snapshot of the VEDA AI shared design assets (unreleased 0.1.0, commit `fbeb384ea859c4c71019fc5d77e9cad645722a2a`) in [`vendor/veda-design/0.1.0-pilot-fbeb384/`](vendor/veda-design/0.1.0-pilot-fbeb384/). The upstream repository is private. The copies are unmodified; provenance, SHA-256 values, terms status and update/rollback steps are in [`SOURCE.md`](vendor/veda-design/0.1.0-pilot-fbeb384/SOURCE.md). Local adjustments are in `css/style.css`. Adoption issue: <https://github.com/Yuzki/gandhari-unicode-convert/issues/6>.
+The interface uses a pinned snapshot of the VEDA AI shared design assets (unreleased 0.1.0, commit `0b90d3c2a06d58212f4fa14965cec31b8ea99dde`) in [`vendor/veda-design/0.1.0-pilot-0b90d3c/`](vendor/veda-design/0.1.0-pilot-0b90d3c/). The upstream repository is private. The copies are unmodified; provenance, SHA-256 values, terms status and update/rollback steps are in [`SOURCE.md`](vendor/veda-design/0.1.0-pilot-0b90d3c/SOURCE.md). Local adjustments are in `css/style.css`. Adoption issue: <https://github.com/Yuzki/gandhari-unicode-convert/issues/6>.
 
 ## Files
 
