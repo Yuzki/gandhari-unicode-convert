@@ -12,7 +12,9 @@
     "noscript": "JavaScript が無効なため、変換ツールは動作しません。JavaScript を有効にしてページを再読み込みしてください。",
     "footer": {
       "fonts": "変換後のテキスト・ファイルは、結合文字が表示できるフォントやエディタで保存してください。",
-      "source": "GitHub のソースコード"
+      "source": "GitHub のソースコード",
+      "report": "問題を報告",
+      "reportNote": "報告は GitHub の公開 issue になります。GitHub アカウントが必要で、入力した内容は誰でも読めます。個人情報は書かないでください。"
     }
   },
   "app": {

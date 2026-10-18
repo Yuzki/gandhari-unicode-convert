@@ -12,7 +12,9 @@
     "noscript": "JavaScript is disabled, so the converter cannot run. Enable JavaScript and reload this page to use it.",
     "footer": {
       "fonts": "Save converted text and files with a font or editor that can display combining characters.",
-      "source": "Source code on GitHub"
+      "source": "Source code on GitHub",
+      "report": "Report a problem",
+      "reportNote": "Reports become public GitHub issues. A GitHub account is required, and anything you write can be read by anyone. Do not include personal information."
     }
   },
   "app": {
