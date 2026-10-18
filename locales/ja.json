@@ -2,6 +2,7 @@
   "common": {
     "skipLink": "本文へ移動",
     "language": { "label": "表示言語" },
+    "settings": { "label": "表示設定" },
     "theme": {
       "label": "配色",
       "system": "端末の設定に合わせる",
@@ -37,8 +38,12 @@
       "convert": "変換",
       "clear": "クリア",
       "copy": "クリップボードにコピー",
+      "jumpToResult": "結果へ移動",
       "errorsTitle": "入力内容を確認してください",
       "errorEmpty": "変換するテキストを入力してください。"
+    },
+    "textNotice": {
+      "converted": "{count} 文字を変換しました。"
     },
     "textStatus": {
       "initial": {
