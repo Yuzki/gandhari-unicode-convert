@@ -299,6 +299,49 @@ describe("language and mode changes", () => {
   });
 });
 
+describe("result jump notice", () => {
+  it("shows a count note after conversion without moving focus; hides it on empty and clear", async () => {
+    const { els, document } = createApp({ i18n: createI18n("en") });
+    assert.equal(els["text-notice"].hidden, true);
+
+    els["input-text"].value = "abc";
+    await els["convert-text-btn"].dispatch("click");
+    assert.equal(els["text-notice"].hidden, false);
+    assert.equal(els["text-notice-message"].textContent, "Converted 3 characters.");
+    assert.notEqual(document.activeElement, els["output-title"]);
+
+    els["input-text"].value = "";
+    await els["convert-text-btn"].dispatch("click");
+    assert.equal(els["text-notice"].hidden, true);
+
+    els["input-text"].value = "abc";
+    await els["convert-text-btn"].dispatch("click");
+    await els["clear-btn"].dispatch("click");
+    assert.equal(els["text-notice"].hidden, true);
+  });
+
+  it("moves focus to the result heading only when the link is activated", async () => {
+    const { els, document } = createApp();
+    els["input-text"].value = "abc";
+    await els["convert-text-btn"].dispatch("click");
+    await els["text-notice-link"].dispatch("click");
+    assert.equal(document.activeElement, els["output-title"]);
+  });
+
+  it("re-renders the note in the new language", async () => {
+    const i18n = createI18n("en");
+    const { els, document } = createApp({ i18n });
+    els["input-text"].value = "abc";
+    await els["convert-text-btn"].dispatch("click");
+    i18n.lang = "ja";
+    await document.dispatch("veda:languagechange", { detail: { lang: "ja" } });
+    assert.equal(
+      els["text-notice-message"].textContent,
+      ja["app.textNotice.converted"].replace("{count}", "3"),
+    );
+  });
+});
+
 describe("mode tabs", () => {
   it("keeps one selected tab, roving tabindex and hidden panels", async () => {
     const { els, document } = createApp();

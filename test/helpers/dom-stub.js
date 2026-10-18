@@ -77,6 +77,10 @@ const IDS = [
   "text-error-link",
   "input-text-error",
   "text-status",
+  "text-notice",
+  "text-notice-message",
+  "text-notice-link",
+  "output-title",
   "docx-input",
   "docx-input-error",
   "convert-docx-btn",
@@ -104,7 +108,7 @@ function createDocument() {
   for (const id of IDS) document.elements[id] = new Element(document, id);
   const els = document.elements;
 
-  for (const id of ["converter-app", "text-errors", "input-text-error", "docx-input-error", "docx-panel"]) {
+  for (const id of ["converter-app", "text-notice", "text-errors", "input-text-error", "docx-input-error", "docx-panel"]) {
     els[id].hidden = true;
   }
   els["copy-btn"].disabled = true;

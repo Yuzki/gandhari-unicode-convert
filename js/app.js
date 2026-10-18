@@ -44,6 +44,10 @@ const FALLBACK_MESSAGES = {
   ],
 };
 
+// Short note beside the input after a conversion (separate from the status
+// messages above, which are announced in the result pane).
+const FALLBACK_NOTICE = "Converted {count} characters.";
+
 const STATUS_ICONS = { info: "i", success: "✓", error: "!" };
 
 // Returns the localized string for key, or the English fallback.
@@ -72,6 +76,10 @@ document.addEventListener("DOMContentLoaded", function () {
   const textErrorLink = document.getElementById("text-error-link");
   const inputError = document.getElementById("input-text-error");
   const textStatus = document.getElementById("text-status");
+  const textNotice = document.getElementById("text-notice");
+  const textNoticeMessage = document.getElementById("text-notice-message");
+  const textNoticeLink = document.getElementById("text-notice-link");
+  const outputTitle = document.getElementById("output-title");
   const docxInput = document.getElementById("docx-input");
   const docxInputError = document.getElementById("docx-input-error");
   const convertDocxBtn = document.getElementById("convert-docx-btn");
@@ -83,6 +91,7 @@ document.addEventListener("DOMContentLoaded", function () {
   let textState = null;
   let docxState = null;
   let docxBusy = false;
+  let noticeCount = null;
 
   function renderStatus(container, state) {
     container.textContent = "";
@@ -121,7 +130,31 @@ document.addEventListener("DOMContentLoaded", function () {
     renderStatus(docxStatus, docxState);
   }
 
+  // Not a live region: the result pane already announces the outcome.
+  function renderNotice() {
+    textNotice.hidden = noticeCount === null;
+    if (noticeCount === null) return;
+    const params = { count: noticeCount };
+    const i18n = globalThis.VedaI18n;
+    let text = i18n && i18n.lang ? i18n.t("app.textNotice.converted", params) : "";
+    if (!text || text === "app.textNotice.converted") {
+      text = FALLBACK_NOTICE.replace("{count}", String(noticeCount));
+    }
+    textNoticeMessage.textContent = text;
+  }
+
+  function setNotice(count) {
+    noticeCount = count;
+    renderNotice();
+  }
+
+  textNoticeLink.addEventListener("click", function (event) {
+    event.preventDefault();
+    outputTitle.focus();
+  });
+
   document.addEventListener("veda:languagechange", function () {
+    renderNotice();
     renderStatus(textStatus, textState);
     renderStatus(docxStatus, docxState);
   });
@@ -182,13 +215,16 @@ document.addEventListener("DOMContentLoaded", function () {
     const input = inputText.value;
     if (input === "") {
       showTextError();
+      setNotice(null);
       setTextStatus("error", outputText.value ? "emptyKept" : "empty");
       return;
     }
     clearTextError();
     outputText.value = convertGandhariToUnicode(input);
     copyBtn.disabled = outputText.value === "";
-    setTextStatus("success", "converted", { count: Array.from(input).length });
+    const count = Array.from(input).length;
+    setNotice(count);
+    setTextStatus("success", "converted", { count: count });
   });
 
   clearBtn.addEventListener("click", function () {
@@ -196,6 +232,7 @@ document.addEventListener("DOMContentLoaded", function () {
     outputText.value = "";
     copyBtn.disabled = true;
     clearTextError();
+    setNotice(null);
     setTextStatus("info", "cleared");
   });
 
