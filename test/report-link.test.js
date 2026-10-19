@@ -7,7 +7,7 @@ const vm = require("vm");
 const { loadLocale } = require("./helpers/dom-stub");
 
 const ROOT = path.resolve(__dirname, "..");
-const VENDOR = "vendor/veda-design/0.1.0-pilot-9d65cf4";
+const VENDOR = "vendor/veda-design/0.1.0-pilot-cad0076";
 const html = fs.readFileSync(path.join(ROOT, "index.html"), "utf8");
 const en = loadLocale("en");
 
@@ -94,6 +94,23 @@ describe("footer report link", () => {
     });
     assert.equal(url.searchParams.get("page"), null);
     assert.equal(url.searchParams.get("service"), "Gandhari Converter");
+  });
+});
+
+describe("parent site link", () => {
+  const ref = html.match(/<p class="veda-project-reference">([\s\S]*?)<\/p>/);
+  const anchor = ref && ref[1].match(/<a\s[^>]*>[\s\S]*?<\/a\s*>/)[0];
+
+  it("is a plain same-tab link to veda-ai.org in the footer", () => {
+    assert.ok(anchor, "anchor exists");
+    assert.equal(attr(anchor, "href"), "https://veda-ai.org");
+    assert.equal(attr(anchor, "target"), null);
+    assert.equal(attr(anchor, "data-i18n"), "common.project.related");
+    assert.match(html.slice(html.indexOf('<footer class="veda-footer">')), /veda-project-reference/);
+  });
+
+  it("keeps static text equal to the English dictionary", () => {
+    assert.equal(anchor.replace(/<[^>]*>/g, "").trim(), en["common.project.related"]);
   });
 });
 

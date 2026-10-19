@@ -11,6 +11,9 @@
     },
     "required": "（必須）",
     "noscript": "JavaScript が無効なため、変換ツールは動作しません。JavaScript を有効にしてページを再読み込みしてください。",
+    "project": {
+      "related": "関連プロジェクト: VEDA AI（veda-ai.org）"
+    },
     "footer": {
       "fonts": "変換後のテキスト・ファイルは、結合文字が表示できるフォントやエディタで保存してください。",
       "source": "GitHub のソースコード",
