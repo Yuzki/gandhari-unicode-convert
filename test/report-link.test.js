@@ -7,7 +7,7 @@ const vm = require("vm");
 const { loadLocale } = require("./helpers/dom-stub");
 
 const ROOT = path.resolve(__dirname, "..");
-const VENDOR = "vendor/veda-design/0.1.0-pilot-cad0076";
+const VENDOR = "vendor/veda-design/0.1.0-pilot-af6d1dc";
 const html = fs.readFileSync(path.join(ROOT, "index.html"), "utf8");
 const en = loadLocale("en");
 

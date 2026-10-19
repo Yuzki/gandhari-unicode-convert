@@ -2,11 +2,15 @@
  * VEDA AI theme switch (v0.1.0). Optional: tokens.css follows the OS setting
  * without it.
  *
- * Load in <head> without `defer` so a saved choice applies before first paint.
+ * Load in <head> without `defer`, after settings.js, so the resolved choice
+ * applies before first paint. Start-up order and sharing: see settings.js.
+ * Without settings.js (legacy use) it falls back to origin-local behavior:
+ * a valid data-veda-theme attribute > localStorage > system.
  * Markup: <select data-veda-theme-control> with options system | light | dark.
  * Its nearest [data-veda-requires-js] container is un-hidden, and so is the
  * enclosing [data-veda-settings] (display settings <details>) if any.
- * The choice is stored when possible; if storage fails it still applies.
+ * An explicit choice (including "system") is stored when possible; if storage
+ * fails it still applies. Start-up never fires an event.
  *
  * API: window.VedaTheme.set("system" | "light" | "dark"), .get()
  * Event: document "veda:themechange" with detail { theme }.
@@ -17,6 +21,8 @@
   const STORAGE_KEY = "veda-theme";
   const THEMES = ["system", "light", "dark"];
   const root = document.documentElement;
+
+  const shared = window.VedaSettings;
 
   function read() {
     try {
@@ -29,8 +35,7 @@
 
   function write(theme) {
     try {
-      if (theme === "system") localStorage.removeItem(STORAGE_KEY);
-      else localStorage.setItem(STORAGE_KEY, theme);
+      localStorage.setItem(STORAGE_KEY, theme);
     } catch {
       // Storage unavailable: keep the choice for this page view only.
     }
@@ -48,17 +53,25 @@
   function set(theme) {
     if (!THEMES.includes(theme)) return;
     apply(theme);
-    write(theme);
+    if (shared) {
+      shared.saveTheme(theme);
+      shared.updateUrl("theme", theme);
+    } else write(theme);
     for (const control of document.querySelectorAll("select[data-veda-theme-control]")) {
       control.value = theme;
     }
     document.dispatchEvent(new CustomEvent("veda:themechange", { detail: { theme } }));
   }
 
-  // A valid explicit attribute in the markup wins over the saved choice.
-  // An invalid one is dropped so get() and the select agree with the page.
-  const initial = root.getAttribute("data-veda-theme");
-  if (initial !== "light" && initial !== "dark") apply(read());
+  const attribute = root.getAttribute("data-veda-theme");
+  if (shared) {
+    const { value, source } = shared.resolveTheme({ explicitTheme: attribute });
+    apply(value);
+    if (source === "url") shared.saveTheme(value);
+  } else if (attribute !== "light" && attribute !== "dark") {
+    // A valid explicit attribute wins; an invalid one is dropped.
+    apply(read());
+  }
 
   function bind() {
     for (const control of document.querySelectorAll("select[data-veda-theme-control]")) {
