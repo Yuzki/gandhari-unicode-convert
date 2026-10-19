@@ -63,7 +63,7 @@ describe("index.html i18n markup", () => {
     assert.match(html, /<html lang="en">/);
     assert.doesNotMatch(html, /(?:href|src)="\/(?!\/)/);
     const attr = html.match(/data-veda-locales="([^"]+)"/)[1];
-    const scriptDir = path.join(ROOT, "vendor/veda-design/0.1.0-pilot-cad0076/scripts");
+    const scriptDir = path.join(ROOT, "vendor/veda-design/0.1.0-pilot-af6d1dc/scripts");
     assert.equal(path.resolve(scriptDir, attr), path.join(ROOT, "locales"));
   });
 });

@@ -7,7 +7,10 @@
  *   <select data-veda-language>        language switcher; its nearest
  *                                      [data-veda-requires-js] container is un-hidden,
  *                                      and so is the enclosing [data-veda-settings]
- * Language priority: ?lang= > saved choice > <html lang> > profiles.default.
+ * Load settings.js (head, no defer) first. Language priority: ?lang= >
+ * shared cookie > saved choice > browser languages > profiles.default (see
+ * settings.js); <html lang> only describes the static text, it is not a choice.
+ * Without settings.js (legacy use): ?lang= > saved > <html lang> > default.
  * Unsupported languages follow their `fallback` chain in locales/profiles.json.
  * A message missing in the active language falls back along the same chain and
  * the element gets `lang` of the language actually shown.
@@ -24,6 +27,7 @@
   const STORAGE_KEY = "veda-lang";
   const PARAM = "lang";
 
+  const shared = window.VedaSettings;
   const state = { lang: null, profiles: null, messages: {} };
 
   function readStored() {
@@ -49,12 +53,14 @@
   }
 
   function isSupported(lang) {
-    return state.profiles?.languages[lang]?.status === "supported";
+    const languages = state.profiles?.languages;
+    return Object.prototype.hasOwnProperty.call(languages ?? {}, lang) && languages[lang].status === "supported";
   }
 
   // Exact tag, then primary subtag ("en-GB" -> "en"), then the fallback chain.
   function resolveLanguage(requested) {
     if (!requested) return null;
+    if (shared) return shared.matchLanguage(state.profiles, requested);
     const tag = requested.toLowerCase();
     const candidates = [tag, tag.split("-")[0]];
     for (const candidate of candidates) {
@@ -154,8 +160,13 @@
       control.value = lang;
     }
     if (persist) {
-      store(lang);
-      updateUrl(lang);
+      if (shared) {
+        shared.saveLanguage(lang);
+        shared.updateUrl(PARAM, lang);
+      } else {
+        store(lang);
+        updateUrl(lang);
+      }
     }
     document.dispatchEvent(new CustomEvent("veda:languagechange", { detail: { lang } }));
     return lang;
@@ -178,12 +189,17 @@
 
   async function init() {
     state.profiles = await loadJson("profiles.json");
-    const requested =
-      new URL(location.href).searchParams.get(PARAM) ||
-      readStored() ||
-      document.documentElement.lang ||
-      state.profiles.default;
-    const fromUrl = new URL(location.href).searchParams.has(PARAM);
+    let requested;
+    let fromUrl;
+    if (shared) {
+      const resolved = shared.resolveLanguage({ profiles: state.profiles });
+      requested = resolved.value;
+      fromUrl = resolved.source === "url";
+    } else {
+      const params = new URL(location.href).searchParams;
+      requested = params.get(PARAM) || readStored() || document.documentElement.lang || state.profiles.default;
+      fromUrl = params.has(PARAM);
+    }
     const lang = await setLanguage(requested, { persist: fromUrl });
     bindControls();
     return lang;
