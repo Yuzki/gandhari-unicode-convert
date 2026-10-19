@@ -145,6 +145,20 @@
   font-weight: 700;
 }
 
+/*
+ * Parent-site return link: an ordinary link between the brand and the
+ * display settings, always visible (never inside the settings details).
+ */
+.veda-parent-link {
+  display: inline-flex;
+  align-items: center;
+  box-sizing: border-box;
+  max-inline-size: 100%;
+  min-block-size: var(--veda-target-min);
+  line-height: var(--veda-line-height-ui);
+  overflow-wrap: anywhere;
+}
+
 .veda-header__tools {
   display: flex;
   flex-wrap: wrap;
@@ -289,6 +303,23 @@
   display: inline-flex;
   align-items: center;
   min-block-size: var(--veda-target-min);
+}
+
+/* Quiet reference to the VEDA AI project; sits in .veda-footer__inner. */
+.veda-project-reference {
+  margin: 0;
+  color: var(--veda-color-text-muted);
+  font-size: var(--veda-font-size-sm);
+  line-height: var(--veda-line-height-ui);
+  overflow-wrap: anywhere;
+}
+
+/* The link itself carries the 44px target, including when its text wraps. */
+.veda-project-reference > a {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: var(--veda-target-min);
+  min-inline-size: var(--veda-target-min);
 }
 
 /* ---- Buttons ------------------------------------------------------------ */
