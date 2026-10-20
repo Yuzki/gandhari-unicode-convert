@@ -65,7 +65,7 @@ node --test
 
 ## Shared design
 
-The interface uses a pinned snapshot of the VEDA AI shared design assets (unreleased 0.1.0, commit `af6d1dc9f565b9d9a561a6479fef11131c75e3e4`) in [`vendor/veda-design/0.1.0-pilot-af6d1dc/`](vendor/veda-design/0.1.0-pilot-af6d1dc/). The upstream repository is private. The copies are unmodified; provenance, SHA-256 values, terms status and update/rollback steps are in [`SOURCE.md`](vendor/veda-design/0.1.0-pilot-af6d1dc/SOURCE.md). Local adjustments are in `css/style.css`. The footer links to the parent site (<https://veda-ai.org>, key `common.project.related`) as a plain same-tab link. Adoption issue: <https://github.com/Yuzki/gandhari-unicode-convert/issues/6>.
+The interface uses a pinned snapshot of the VEDA AI shared design assets (unreleased 0.1.0, commit `d08f1bf748f5804fb376968f0378526727564ee4`) in [`vendor/veda-design/0.1.0-pilot-d08f1bf/`](vendor/veda-design/0.1.0-pilot-d08f1bf/). The upstream repository is private. The copies are unmodified; provenance, SHA-256 values, terms status and update/rollback steps are in [`SOURCE.md`](vendor/veda-design/0.1.0-pilot-d08f1bf/SOURCE.md). Local adjustments are in `css/style.css`. The footer links to the parent site (<https://veda-ai.org>, key `common.project.related`) as a plain same-tab link. Adoption issue: <https://github.com/Yuzki/gandhari-unicode-convert/issues/6>.
 
 The footer "Report a problem" link opens the shared `veda-ai-feedback` issue form with `service=Gandhari Converter`. The vendored `scripts/report.js` adds the current page (origin and path only, no query or hash); without JavaScript the link still carries `service`. Reports become public GitHub issues.
 

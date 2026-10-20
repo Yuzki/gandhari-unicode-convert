@@ -481,7 +481,7 @@
   margin: 0;
   padding: var(--veda-space-3) var(--veda-space-4) var(--veda-space-4);
   border: var(--veda-border-width) solid var(--veda-color-border-subtle);
-  border-radius: var(--veda-radius-md);
+  border-radius: var(--veda-radius-sm);
 }
 
 .veda-legend {
@@ -595,7 +595,8 @@
  * only hides them). The page decides the initial state; the summary shows how
  * many filters apply.
  */
-.veda-filters__summary {
+.veda-filters__summary,
+.veda-disclosure__summary {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -607,17 +608,27 @@
 }
 
 /* flex drops the native marker, so draw one that follows [open]. */
-.veda-filters__summary::before {
+.veda-filters__summary::before,
+.veda-disclosure__summary::before {
   content: "\25B8";
   flex: none;
 }
 
-.veda-filters[open] > .veda-filters__summary::before {
+.veda-filters[open] > .veda-filters__summary::before,
+.veda-disclosure[open] > .veda-disclosure__summary::before {
   content: "\25BE";
 }
 
-.veda-filters__body {
+.veda-filters__body,
+.veda-disclosure__body {
   padding-block-start: var(--veda-space-3);
+}
+
+/* Secondary controls (demo switches, fixed examples, details) closed after the main task. */
+.veda-disclosure__summary {
+  inline-size: fit-content;
+  color: var(--veda-color-text-muted);
+  font-weight: 600;
 }
 
 /* Pagination: name the nav, show the range, previous / current / next. */
@@ -768,10 +779,9 @@
   gap: var(--veda-space-2);
   min-inline-size: 0;
   padding: var(--veda-space-4);
+  /* One thin frame, no shadow, page ground: cards group a resource, not a section. */
   border: var(--veda-border-width) solid var(--veda-color-border-subtle);
-  border-radius: var(--veda-radius-md);
-  background: var(--veda-color-surface);
-  box-shadow: var(--veda-shadow-sm);
+  border-radius: var(--veda-radius-sm);
 }
 
 .veda-card > * {
@@ -797,7 +807,6 @@
   padding: 0.0625rem var(--veda-space-2);
   border: var(--veda-border-width) solid currentColor;
   border-radius: var(--veda-radius-sm);
-  background: var(--veda-color-surface);
   color: var(--veda-color-text-muted);
   font-size: var(--veda-font-size-sm);
   font-weight: 600;
@@ -845,7 +854,7 @@
   padding: var(--veda-space-3) var(--veda-space-4);
   border: var(--veda-border-width) solid var(--veda-color-border-subtle);
   border-inline-start-width: 4px;
-  border-radius: var(--veda-radius-md);
+  border-radius: var(--veda-radius-sm);
   background: var(--veda-color-surface-subtle);
   color: var(--veda-color-text);
   max-inline-size: 100%;
@@ -948,7 +957,7 @@
 .veda-error-summary {
   padding: var(--veda-space-4);
   border: var(--veda-border-width-strong) solid var(--veda-color-danger);
-  border-radius: var(--veda-radius-md);
+  border-radius: var(--veda-radius-sm);
   background: var(--veda-color-danger-bg);
 }
 
@@ -968,10 +977,9 @@
 .veda-ai {
   display: grid;
   gap: var(--veda-space-2);
+  /* A single boundary: the AI rule on the start edge plus the AI ground. */
   padding: var(--veda-space-3) var(--veda-space-4);
-  border: var(--veda-border-width) dashed var(--veda-color-ai);
   border-inline-start: 4px solid var(--veda-color-ai);
-  border-radius: var(--veda-radius-md);
   background: var(--veda-color-ai-bg);
 }
 
@@ -990,7 +998,6 @@
   margin: 0;
   padding: var(--veda-space-3) var(--veda-space-4);
   border-inline-start: 4px solid var(--veda-color-border);
-  background: var(--veda-color-surface);
 }
 
 /* ---- Embedded specialist widgets (Mirador, editors, canvases) ----------- */
@@ -1005,7 +1012,7 @@
   min-block-size: 20rem;
   min-inline-size: 0;
   border: var(--veda-border-width) solid var(--veda-color-border);
-  border-radius: var(--veda-radius-md);
+  border-radius: var(--veda-radius-sm);
   background: var(--veda-color-surface-subtle);
   line-height: normal;
   letter-spacing: normal;
@@ -1024,11 +1031,16 @@
   text-align: center;
 }
 
+.veda-embed__title {
+  color: var(--veda-color-text);
+  font-weight: 700;
+}
+
 /* ---- Panes and tabs (workbench) ----------------------------------------- */
 
 .veda-workbench {
   display: grid;
-  gap: var(--veda-space-4);
+  gap: var(--veda-space-6) var(--veda-space-5);
 }
 
 @media (min-width: 64rem) {
@@ -1045,9 +1057,6 @@
   display: flex;
   flex-direction: column;
   min-inline-size: 0;
-  border: var(--veda-border-width) solid var(--veda-color-border-subtle);
-  border-radius: var(--veda-radius-md);
-  background: var(--veda-color-surface);
 }
 
 .veda-pane__header {
@@ -1056,7 +1065,8 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--veda-space-2);
-  padding: var(--veda-space-2) var(--veda-space-4);
+  min-block-size: 2rem;
+  padding-block-end: var(--veda-space-2);
   border-block-end: var(--veda-border-width) solid var(--veda-color-border-subtle);
 }
 
@@ -1070,7 +1080,7 @@
 .veda-pane__body {
   display: grid;
   gap: var(--veda-space-3);
-  padding: var(--veda-space-4);
+  padding-block: var(--veda-space-3) 0;
   min-inline-size: 0;
   overflow: auto;
 }
