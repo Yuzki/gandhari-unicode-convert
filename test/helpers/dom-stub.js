@@ -78,7 +78,6 @@ const IDS = [
   "input-text-error",
   "text-status",
   "text-notice",
-  "text-notice-message",
   "text-notice-link",
   "output-title",
   "docx-input",
@@ -113,7 +112,6 @@ function createDocument() {
   }
   els["copy-btn"].disabled = true;
   els["convert-docx-btn"].disabled = true;
-  els["input-text"].setAttribute("aria-describedby", "input-text-hint");
   els["docx-input"].setAttribute("aria-describedby", "docx-input-hint");
   els["tab-text"].setAttribute("aria-controls", "text-panel");
   els["tab-text"].setAttribute("aria-selected", "true");

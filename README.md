@@ -14,10 +14,10 @@ Public page: <https://yuzki.github.io/gandhari-unicode-convert/>
 ## Usage
 
 1. Open the public page.
-2. Choose the **Text conversion** or **DOCX file conversion** tab.
-3. Text: paste text, choose **Convert**, then use **Copy to clipboard**. Empty input is reported as an error; whitespace is never trimmed and the text is never normalized. If copying is blocked, the result is selected so you can copy it manually.
-4. DOCX: choose a `.docx` file, then **Convert and download**. The file extension must be `.docx` (any letter case). While a file is converting, file selection and the convert button are disabled; if conversion fails, the file stays selected so you can retry.
-5. Check and save the result with a font or editor that can display combining characters.
+2. Choose the **Text** or **DOCX** tab.
+3. Text: paste text, choose **Convert**, then use **Copy**. The text is converted exactly as entered: whitespace is never trimmed and the text is never normalized. Empty input is reported as an error and keeps any previous result. After a conversion the result status shows the number of input characters (code points); on narrow screens **View result** under the input jumps to the result. If copying is blocked, the result is selected so you can copy it manually (the result is read-only).
+4. DOCX: choose a `.docx` file, then **Convert**; the converted file is downloaded. The file extension must be `.docx` (any letter case). While a file is converting, file selection and the convert button are disabled; if conversion fails, the file stays selected so you can retry.
+5. Check and save the result with a font or editor that can display combining characters; stacked marks may display poorly in fonts that do not support them.
 
 ### Language and theme
 
@@ -65,7 +65,7 @@ node --test
 
 ## Shared design
 
-The interface uses a pinned snapshot of the VEDA AI shared design assets (unreleased 0.1.0, commit `af6d1dc9f565b9d9a561a6479fef11131c75e3e4`) in [`vendor/veda-design/0.1.0-pilot-af6d1dc/`](vendor/veda-design/0.1.0-pilot-af6d1dc/). The upstream repository is private. The copies are unmodified; provenance, SHA-256 values, terms status and update/rollback steps are in [`SOURCE.md`](vendor/veda-design/0.1.0-pilot-af6d1dc/SOURCE.md). Local adjustments are in `css/style.css`. The footer links to the parent site (<https://veda-ai.org>, key `common.project.related`) as a plain same-tab link. Adoption issue: <https://github.com/Yuzki/gandhari-unicode-convert/issues/6>.
+The interface uses a pinned snapshot of the VEDA AI shared design assets (unreleased 0.1.0, commit `d08f1bf748f5804fb376968f0378526727564ee4`) in [`vendor/veda-design/0.1.0-pilot-d08f1bf/`](vendor/veda-design/0.1.0-pilot-d08f1bf/). The upstream repository is private. The copies are unmodified; provenance, SHA-256 values, terms status and update/rollback steps are in [`SOURCE.md`](vendor/veda-design/0.1.0-pilot-d08f1bf/SOURCE.md). Local adjustments are in `css/style.css`. The footer links to the parent site (<https://veda-ai.org>, key `common.project.related`) as a plain same-tab link. Adoption issue: <https://github.com/Yuzki/gandhari-unicode-convert/issues/6>.
 
 The footer "Report a problem" link opens the shared `veda-ai-feedback` issue form with `service=Gandhari Converter`. The vendored `scripts/report.js` adds the current page (origin and path only, no query or hash); without JavaScript the link still carries `service`. Reports become public GitHub issues.
 

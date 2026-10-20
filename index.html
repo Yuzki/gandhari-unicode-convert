@@ -5,18 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="color-scheme" content="light dark" />
     <title data-i18n="app.pageTitle">Gandhari Unicode Converter</title>
-    <link rel="stylesheet" href="vendor/veda-design/0.1.0-pilot-af6d1dc/styles/tokens.css" />
-    <link rel="stylesheet" href="vendor/veda-design/0.1.0-pilot-af6d1dc/styles/typography.css" />
-    <link rel="stylesheet" href="vendor/veda-design/0.1.0-pilot-af6d1dc/styles/components.css" />
+    <link rel="stylesheet" href="vendor/veda-design/0.1.0-pilot-d08f1bf/styles/tokens.css" />
+    <link rel="stylesheet" href="vendor/veda-design/0.1.0-pilot-d08f1bf/styles/typography.css" />
+    <link rel="stylesheet" href="vendor/veda-design/0.1.0-pilot-d08f1bf/styles/components.css" />
     <link rel="stylesheet" href="css/style.css" />
-    <script src="vendor/veda-design/0.1.0-pilot-af6d1dc/scripts/settings.js"></script>
-    <script src="vendor/veda-design/0.1.0-pilot-af6d1dc/scripts/theme.js"></script>
+    <script src="vendor/veda-design/0.1.0-pilot-d08f1bf/scripts/settings.js"></script>
+    <script src="vendor/veda-design/0.1.0-pilot-d08f1bf/scripts/theme.js"></script>
     <script
-      src="vendor/veda-design/0.1.0-pilot-af6d1dc/scripts/i18n.js"
+      src="vendor/veda-design/0.1.0-pilot-d08f1bf/scripts/i18n.js"
       data-veda-locales="../../../../locales/"
       defer
     ></script>
-    <script src="vendor/veda-design/0.1.0-pilot-af6d1dc/scripts/report.js" defer></script>
+    <script src="vendor/veda-design/0.1.0-pilot-d08f1bf/scripts/report.js" defer></script>
   </head>
   <body class="veda-root">
     <a class="veda-skip-link" href="#main" data-i18n="common.skipLink"
@@ -65,10 +65,9 @@
 
     <main id="main" class="veda-main veda-container" tabindex="-1">
       <div class="veda-stack">
-        <h1 class="veda-h1" data-i18n="app.title">Gandhari Unicode Converter</h1>
+        <h1 class="veda-h1" data-i18n="app.heading">Conversion</h1>
         <p class="veda-prose veda-lead" data-i18n="app.lead">
-          Converts characters of the “Gandhari Unicode” font, which uses the Unicode Private Use
-          Area (PUA), into standard Unicode that uses combining characters.
+          Converts Gandhari Unicode characters to standard Unicode.
         </p>
         <noscript>
           <p class="veda-status veda-status--info" data-i18n="common.noscript">
@@ -94,7 +93,7 @@
               aria-controls="text-panel"
               data-i18n="app.tabs.text"
             >
-              Text conversion
+              Text
             </button>
             <button
               type="button"
@@ -107,7 +106,7 @@
               tabindex="-1"
               data-i18n="app.tabs.docx"
             >
-              DOCX file conversion
+              DOCX
             </button>
           </div>
 
@@ -136,12 +135,6 @@
               <section class="veda-stack" aria-labelledby="input-title">
                 <h2 class="veda-h2" id="input-title" data-i18n="app.text.inputTitle">Input</h2>
                 <div class="veda-field">
-                  <label class="veda-label" for="input-text" data-i18n="app.text.inputLabel"
-                    >Text to convert (Gandhari Unicode)</label
-                  >
-                  <p class="veda-hint" id="input-text-hint" data-i18n="app.text.inputHint">
-                    The text is converted exactly as entered. It is never trimmed or normalized.
-                  </p>
                   <p
                     class="veda-field-error"
                     id="input-text-error"
@@ -157,8 +150,8 @@
                     lang=""
                     spellcheck="false"
                     autocomplete="off"
-                    aria-describedby="input-text-hint"
-                    placeholder="Paste text here…"
+                    aria-labelledby="input-title"
+                    placeholder="Paste text…"
                     data-i18n-attr="placeholder:app.text.inputPlaceholder"
                   ></textarea>
                 </div>
@@ -180,10 +173,9 @@
                     Clear
                   </button>
                 </div>
-                <p class="veda-note text-notice" id="text-notice" hidden>
-                  <span id="text-notice-message"></span>
+                <p class="veda-search-jump text-jump" id="text-notice" hidden>
                   <a href="#output-title" id="text-notice-link" data-i18n="app.text.jumpToResult"
-                    >Go to result</a
+                    >View result</a
                   >
                 </p>
               </section>
@@ -194,13 +186,6 @@
                 </h2>
                 <div id="text-status" class="text-status" role="status" aria-live="polite"></div>
                 <div class="veda-field">
-                  <label class="veda-label" for="output-text" data-i18n="app.text.outputLabel"
-                    >Converted text</label
-                  >
-                  <p class="veda-hint" id="output-text-hint" data-i18n="app.text.outputHint">
-                    Read-only. Select the text to copy it manually if the copy button does not
-                    work.
-                  </p>
                   <textarea
                     id="output-text"
                     class="veda-textarea veda-translit"
@@ -208,7 +193,7 @@
                     lang=""
                     spellcheck="false"
                     readonly
-                    aria-describedby="output-text-hint"
+                    aria-labelledby="output-title"
                   ></textarea>
                 </div>
                 <div class="veda-actions">
@@ -219,7 +204,7 @@
                     disabled
                     data-i18n="app.text.copy"
                   >
-                    Copy to clipboard
+                    Copy
                   </button>
                 </div>
               </section>
@@ -234,14 +219,10 @@
             aria-labelledby="tab-docx"
             hidden
           >
-            <h2 class="veda-h2" data-i18n="app.docx.title">DOCX file</h2>
+            <h2 class="veda-h2" id="docx-title" data-i18n="app.docx.title">File</h2>
             <div class="veda-field">
-              <label class="veda-label" for="docx-input" data-i18n="app.docx.label"
-                >Choose a DOCX file</label
-              >
               <p class="veda-hint" id="docx-input-hint" data-i18n="app.docx.hint">
-                The file is processed in your browser and its contents are not uploaded. The page
-                still loads two helper libraries from a CDN (cdnjs).
+                The file is converted in your browser and is not uploaded.
               </p>
               <p
                 class="veda-field-error"
@@ -249,13 +230,14 @@
                 hidden
                 data-i18n="app.docx.invalidInline"
               >
-                Choose a file with the .docx extension.
+                Choose a .docx file.
               </p>
               <input
                 type="file"
                 id="docx-input"
                 class="veda-file"
                 accept=".docx"
+                aria-labelledby="docx-title"
                 aria-describedby="docx-input-hint"
               />
             </div>
@@ -267,7 +249,7 @@
                 disabled
                 data-i18n="app.docx.convert"
               >
-                Convert and download
+                Convert
               </button>
             </div>
             <div id="docx-status" class="docx-status" role="status" aria-live="polite"></div>
@@ -278,16 +260,13 @@
 
     <footer class="veda-footer">
       <div class="veda-container veda-footer__inner">
-        <p data-i18n="common.footer.fonts">
-          Save converted text and files with a font or editor that can display combining
-          characters.
-        </p>
+        <p data-i18n="common.footer.fonts">Use a font that supports combining characters.</p>
         <ul class="veda-footer__links">
           <li>
             <a
               href="https://github.com/Yuzki/gandhari-unicode-convert"
               data-i18n="common.footer.source"
-              >Source code on GitHub</a
+              >Source</a
             >
           </li>
           <li>
@@ -298,7 +277,7 @@
               rel="noopener"
               aria-describedby="veda-report-note"
               data-i18n="common.footer.report"
-              >Report a problem</a
+              >Report</a
             >
           </li>
         </ul>

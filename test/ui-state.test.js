@@ -10,6 +10,11 @@ function file(name) {
   return { name };
 }
 
+// Title and body of a rendered status, without the decorative icon.
+function statusText(container) {
+  return container.children.length ? container.children[0].children[1].textContent : "";
+}
+
 function deferred() {
   const d = {};
   d.promise = new Promise((resolve, reject) => {
@@ -26,16 +31,27 @@ describe("dynamic message fallback", () => {
     assert.ok(Object.keys(fallback).length > 0);
     for (const [key, [title, body]] of Object.entries(fallback)) {
       assert.equal(title, en[key + ".title"], key);
-      assert.equal(body, en[key + ".body"], key);
+      assert.equal(body, en[key + ".body"], key); // both undefined when the title stands alone
     }
     const dynamicKeys = Object.keys(en).filter((k) => /^app\.(text|docx)Status\./.test(k));
     for (const key of dynamicKeys) assert.ok(key.replace(/\.(title|body)$/, "") in fallback, key);
   });
 
-  it("renders readable English, never raw keys, when the dictionary is unavailable", () => {
-    const { els } = createApp({ i18n: { lang: null, t: (key) => key } });
-    assert.ok(els["text-status"].textContent.includes(en["app.textStatus.initial.title"]));
-    assert.ok(els["docx-status"].textContent.includes(en["app.docxStatus.none.title"]));
+  it("renders readable English, never raw keys, when the dictionary is unavailable", async () => {
+    const { els } = createApp({
+      i18n: { lang: null, t: (key) => key },
+      convertDocxFile: async () => {
+        throw new Error("bad");
+      },
+    });
+    els["input-text"].value = "abc";
+    await els["convert-text-btn"].dispatch("click");
+    els["docx-input"].files = [file("a.docx")];
+    await els["docx-input"].dispatch("change");
+    await els["convert-docx-btn"].dispatch("click");
+    assert.equal(statusText(els["text-status"]), "Converted3 characters");
+    assert.ok(els["docx-status"].textContent.includes(en["app.docxStatus.failure.title"]));
+    assert.ok(els["docx-status"].textContent.includes(en["app.docxStatus.failure.body"]));
     assert.doesNotMatch(els["text-status"].textContent + els["docx-status"].textContent, /app\./);
     assert.equal(els["converter-app"].hidden, false);
   });
@@ -44,7 +60,39 @@ describe("dynamic message fallback", () => {
     const { els } = createApp();
     els["input-text"].value = "abc";
     await els["convert-text-btn"].dispatch("click");
-    assert.ok(els["text-status"].textContent.includes("3 characters were converted"));
+    assert.ok(els["text-status"].textContent.includes("3 characters"));
+  });
+});
+
+describe("initial state", () => {
+  it("starts quiet: empty live regions, no callouts, copy and DOCX conversion disabled", () => {
+    for (const i18n of [undefined, createI18n("en"), createI18n("ja")]) {
+      const { els } = createApp({ i18n });
+      for (const id of ["text-status", "docx-status"]) {
+        assert.equal(els[id].textContent, "", id);
+        assert.equal(els[id].children.length, 0, id);
+      }
+      assert.equal(els["text-notice"].hidden, true);
+      assert.equal(els["copy-btn"].disabled, true);
+      assert.equal(els["convert-docx-btn"].disabled, true);
+      assert.equal(els["input-text"].getAttribute("aria-describedby"), null);
+    }
+  });
+});
+
+describe("status bodies", () => {
+  it("renders a body only for states that need one", async () => {
+    const { els } = createApp({ navigator: { clipboard: { writeText: async () => {} } } });
+    els["input-text"].value = "abc";
+    await els["convert-text-btn"].dispatch("click");
+    const bodyOf = () => els["text-status"].children[0].children[1].children;
+    assert.equal(bodyOf().length, 2, "converted: title + count");
+    assert.equal(bodyOf()[1].textContent, "3 characters");
+
+    await els["copy-btn"].dispatch("click");
+    assert.equal(bodyOf().length, 1, "copied: title only");
+    await els["clear-btn"].dispatch("click");
+    assert.equal(bodyOf().length, 1, "cleared: title only");
   });
 });
 
@@ -65,15 +113,25 @@ describe("text conversion states", () => {
     assert.equal(document.activeElement, els["text-errors"]);
     assert.equal(els["input-text-error"].hidden, false);
     assert.equal(els["input-text"].getAttribute("aria-invalid"), "true");
-    assert.match(els["input-text"].getAttribute("aria-describedby"), /input-text-error/);
+    assert.equal(els["input-text"].getAttribute("aria-describedby"), "input-text-error");
     assert.equal(els["output-text"].value, "abc");
     assert.equal(els["copy-btn"].disabled, false);
-    assert.ok(els["text-status"].textContent.includes("previous result is still shown"));
+    assert.equal(statusText(els["text-status"]), en["app.textStatus.emptyKept.title"]);
+    assert.equal(els["text-notice"].hidden, true);
 
     els["input-text"].value = "x";
     await els["input-text"].dispatch("input");
     assert.equal(els["text-errors"].hidden, true);
     assert.equal(els["input-text"].getAttribute("aria-invalid"), null);
+    assert.equal(els["input-text"].getAttribute("aria-describedby"), null);
+  });
+
+  it("does not repeat the empty-input error in the result status when nothing was kept", async () => {
+    const { els } = createApp();
+    await els["convert-text-btn"].dispatch("click");
+    assert.equal(els["text-errors"].hidden, false);
+    assert.equal(els["input-text-error"].hidden, false);
+    assert.equal(els["text-status"].textContent, "");
   });
 
   it("does not trim whitespace-only input", async () => {
@@ -102,7 +160,7 @@ describe("text conversion states", () => {
     assert.equal(els["input-text"].value, "");
     assert.equal(els["output-text"].value, "");
     assert.equal(els["copy-btn"].disabled, true);
-    assert.ok(els["text-status"].textContent.includes("cleared"));
+    assert.equal(statusText(els["text-status"]), en["app.textStatus.cleared.title"]);
   });
 });
 
@@ -155,16 +213,22 @@ describe("DOCX states", () => {
     assert.equal(els["convert-docx-btn"].disabled, true);
     assert.equal(els["docx-input-error"].hidden, false);
     assert.equal(els["docx-input"].getAttribute("aria-invalid"), "true");
-    assert.ok(els["docx-status"].textContent.includes("notes.txt"));
+    assert.equal(
+      els["docx-input"].getAttribute("aria-describedby"),
+      "docx-input-hint docx-input-error",
+    );
+    assert.equal(statusText(els["docx-status"]), en["app.docxStatus.invalid.title"]);
 
     await pick(els, file("THESIS.DOCX"));
     assert.equal(els["convert-docx-btn"].disabled, false);
     assert.equal(els["docx-input-error"].hidden, true);
     assert.equal(els["docx-input"].getAttribute("aria-invalid"), null);
+    assert.equal(els["docx-input"].getAttribute("aria-describedby"), "docx-input-hint");
+    assert.equal(els["docx-status"].textContent, "", "a selected file is not echoed back");
 
     await pick(els, null);
     assert.equal(els["convert-docx-btn"].disabled, true);
-    assert.ok(els["docx-status"].textContent.includes(en["app.docxStatus.none.title"]));
+    assert.equal(els["docx-status"].textContent, "");
   });
 
   it("disables selection and duplicate submission while busy, then recovers", async () => {
@@ -191,6 +255,7 @@ describe("DOCX states", () => {
     assert.equal(els["convert-docx-btn"].disabled, false);
     assert.equal(els["docx-input"].disabled, false);
     assert.equal(els["convert-docx-btn"].getAttribute("aria-busy"), null);
+    assert.ok(els["docx-status"].textContent.includes(en["app.docxStatus.success.title"]));
     assert.ok(els["docx-status"].textContent.includes("long ファイル_converted.docx"));
   });
 
@@ -236,6 +301,7 @@ describe("DOCX states", () => {
     await pick(els, file("a.docx"));
     await els["convert-docx-btn"].dispatch("click");
     assert.ok(els["docx-status"].textContent.includes(en["app.docxStatus.failure.title"]));
+    assert.ok(els["docx-status"].textContent.includes(en["app.docxStatus.failure.body"]));
     assert.ok(!els["docx-status"].textContent.includes("bad zip"));
     assert.equal(els["convert-docx-btn"].disabled, false);
     assert.equal(els["docx-input"].files[0].name, "a.docx");
@@ -285,7 +351,6 @@ describe("language and mode changes", () => {
     await document.dispatch("veda:languagechange", { detail: { lang: "ja" } });
 
     assert.ok(els["docx-status"].textContent.includes(ja["app.docxStatus.busy.title"]));
-    assert.ok(els["docx-status"].textContent.includes("a.docx"));
     assert.ok(els["text-status"].textContent.includes(ja["app.textStatus.converted.title"]));
     assert.equal(els["input-text"].value, "abc");
     assert.equal(els["output-text"].value, "abc");
@@ -296,18 +361,19 @@ describe("language and mode changes", () => {
     pending.resolve();
     await running;
     assert.equal(els["convert-docx-btn"].disabled, false);
+    assert.ok(els["docx-status"].textContent.includes(ja["app.docxStatus.success.title"]));
+    assert.ok(els["docx-status"].textContent.includes("a.docx"));
   });
 });
 
-describe("result jump notice", () => {
-  it("shows a count note after conversion without moving focus; hides it on empty and clear", async () => {
+describe("result jump link", () => {
+  it("appears after conversion without moving focus; hides on empty and clear", async () => {
     const { els, document } = createApp({ i18n: createI18n("en") });
     assert.equal(els["text-notice"].hidden, true);
 
     els["input-text"].value = "abc";
     await els["convert-text-btn"].dispatch("click");
     assert.equal(els["text-notice"].hidden, false);
-    assert.equal(els["text-notice-message"].textContent, "Converted 3 characters.");
     assert.notEqual(document.activeElement, els["output-title"]);
 
     els["input-text"].value = "";
@@ -320,6 +386,14 @@ describe("result jump notice", () => {
     assert.equal(els["text-notice"].hidden, true);
   });
 
+  it("repeats no count: the count appears only in the result status", async () => {
+    const { els } = createApp({ i18n: createI18n("en") });
+    els["input-text"].value = "ab\u{10A00}";
+    await els["convert-text-btn"].dispatch("click");
+    assert.equal(els["text-notice"].textContent, "");
+    assert.ok(els["text-status"].textContent.includes("3 characters"));
+  });
+
   it("moves focus to the result heading only when the link is activated", async () => {
     const { els, document } = createApp();
     els["input-text"].value = "abc";
@@ -328,7 +402,7 @@ describe("result jump notice", () => {
     assert.equal(document.activeElement, els["output-title"]);
   });
 
-  it("re-renders the note in the new language", async () => {
+  it("re-renders the count status in the new language", async () => {
     const i18n = createI18n("en");
     const { els, document } = createApp({ i18n });
     els["input-text"].value = "abc";
@@ -336,8 +410,8 @@ describe("result jump notice", () => {
     i18n.lang = "ja";
     await document.dispatch("veda:languagechange", { detail: { lang: "ja" } });
     assert.equal(
-      els["text-notice-message"].textContent,
-      ja["app.textNotice.converted"].replace("{count}", "3"),
+      statusText(els["text-status"]),
+      ja["app.textStatus.converted.title"] + ja["app.textStatus.converted.body"].replace("{count}", "3"),
     );
   });
 });

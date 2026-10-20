@@ -1,52 +1,30 @@
 // UI controller. Conversion logic lives in converter.js and docx-processor.js.
 
 // English fallback for dynamic messages, used when the dictionaries are
-// unavailable. Keys mirror locales/en.json; other text is static English markup.
+// unavailable. Keys mirror locales/en.json: [title] or [title, body]; the body
+// is optional and omitted when the title alone says enough.
 const FALLBACK_MESSAGES = {
-  "app.textStatus.initial": ["Ready", "Paste text and choose Convert."],
-  "app.textStatus.converted": [
-    "Converted",
-    "{count} characters were converted. The result is shown below the input on narrow screens.",
-  ],
-  "app.textStatus.empty": ["Nothing converted", "The input is empty."],
-  "app.textStatus.emptyKept": [
-    "Nothing converted",
-    "The input is empty. The previous result is still shown.",
-  ],
-  "app.textStatus.cleared": ["Cleared", "The input and the result were cleared."],
-  "app.textStatus.copied": ["Copied", "The result was copied to the clipboard."],
-  "app.textStatus.copyFailed": [
-    "Copy failed",
-    "The browser did not allow copying. The result is selected; copy it manually.",
-  ],
+  "app.textStatus.converted": ["Converted", "{count} characters"],
+  "app.textStatus.emptyKept": ["Previous result kept"],
+  "app.textStatus.cleared": ["Cleared"],
+  "app.textStatus.copied": ["Copied"],
+  "app.textStatus.copyFailed": ["Copy failed", "The result is selected; copy it manually."],
   "app.textStatus.copyUnavailable": [
     "Copy not available",
-    "This browser cannot copy automatically. The result is selected; copy it manually.",
+    "The result is selected; copy it manually.",
   ],
-  "app.docxStatus.none": ["No file selected", "Choose a .docx file to enable conversion."],
-  "app.docxStatus.ready": ["Ready", "{name} is selected. Choose Convert and download."],
-  "app.docxStatus.invalid": [
-    "Unsupported file",
-    "{name} is not a .docx file. Choose a file with the .docx extension.",
-  ],
-  "app.docxStatus.busy": ["Converting", "Converting {name}…"],
-  "app.docxStatus.success": [
-    "Download started",
-    "{name} was sent to your browser’s download. Check that it was saved.",
-  ],
+  "app.docxStatus.invalid": ["Unsupported file"],
+  "app.docxStatus.busy": ["Converting…"],
+  "app.docxStatus.success": ["Download started", "Check that {name} was saved."],
   "app.docxStatus.failure": [
     "Conversion failed",
-    "{name} could not be converted. The file may be damaged or not a valid DOCX. Check the file and try again; the file is still selected.",
+    "The file may be damaged or not a valid DOCX. Check it and try again.",
   ],
   "app.docxStatus.missingLibrary": [
     "Conversion unavailable",
-    "A required library did not load (it is fetched from a CDN). Check your connection, reload the page and try again.",
+    "A required library did not load. Check your connection and reload the page.",
   ],
 };
-
-// Short note beside the input after a conversion (separate from the status
-// messages above, which are announced in the result pane).
-const FALLBACK_NOTICE = "Converted {count} characters.";
 
 const STATUS_ICONS = { info: "i", success: "✓", error: "!" };
 
@@ -58,8 +36,9 @@ function translate(part, key, params) {
     if (found !== key + "." + part) return found;
   }
   const entry = FALLBACK_MESSAGES[key];
-  if (!entry) return "";
-  return entry[part === "title" ? 0 : 1].replace(/\{(\w+)\}/g, function (match, name) {
+  const fallback = entry && entry[part === "title" ? 0 : 1];
+  if (!fallback) return "";
+  return fallback.replace(/\{(\w+)\}/g, function (match, name) {
     return params && name in params ? String(params[name]) : match;
   });
 }
@@ -77,7 +56,6 @@ document.addEventListener("DOMContentLoaded", function () {
   const inputError = document.getElementById("input-text-error");
   const textStatus = document.getElementById("text-status");
   const textNotice = document.getElementById("text-notice");
-  const textNoticeMessage = document.getElementById("text-notice-message");
   const textNoticeLink = document.getElementById("text-notice-link");
   const outputTitle = document.getElementById("output-title");
   const docxInput = document.getElementById("docx-input");
@@ -91,7 +69,6 @@ document.addEventListener("DOMContentLoaded", function () {
   let textState = null;
   let docxState = null;
   let docxBusy = false;
-  let noticeCount = null;
 
   function renderStatus(container, state) {
     container.textContent = "";
@@ -111,10 +88,13 @@ document.addEventListener("DOMContentLoaded", function () {
     const title = document.createElement("p");
     title.className = "veda-status__title";
     title.textContent = translate("title", state.key, state.params);
-    const text = document.createElement("p");
-    text.textContent = translate("body", state.key, state.params);
     body.appendChild(title);
-    body.appendChild(text);
+    const bodyText = translate("body", state.key, state.params);
+    if (bodyText) {
+      const text = document.createElement("p");
+      text.textContent = bodyText;
+      body.appendChild(text);
+    }
     box.appendChild(icon);
     box.appendChild(body);
     container.appendChild(box);
@@ -125,27 +105,25 @@ document.addEventListener("DOMContentLoaded", function () {
     renderStatus(textStatus, textState);
   }
 
+  function clearTextStatus() {
+    textState = null;
+    renderStatus(textStatus, textState);
+  }
+
   function setDocxStatus(kind, key, params) {
     docxState = { kind: kind, key: "app.docxStatus." + key, params: params };
     renderStatus(docxStatus, docxState);
   }
 
-  // Not a live region: the result pane already announces the outcome.
-  function renderNotice() {
-    textNotice.hidden = noticeCount === null;
-    if (noticeCount === null) return;
-    const params = { count: noticeCount };
-    const i18n = globalThis.VedaI18n;
-    let text = i18n && i18n.lang ? i18n.t("app.textNotice.converted", params) : "";
-    if (!text || text === "app.textNotice.converted") {
-      text = FALLBACK_NOTICE.replace("{count}", String(noticeCount));
-    }
-    textNoticeMessage.textContent = text;
+  function clearDocxStatus() {
+    docxState = null;
+    renderStatus(docxStatus, docxState);
   }
 
-  function setNotice(count) {
-    noticeCount = count;
-    renderNotice();
+  // Jump link beside the input, only needed while the result sits below it.
+  // The count is shown once, in the result status.
+  function setNotice(visible) {
+    textNotice.hidden = !visible;
   }
 
   textNoticeLink.addEventListener("click", function (event) {
@@ -154,7 +132,6 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   document.addEventListener("veda:languagechange", function () {
-    renderNotice();
     renderStatus(textStatus, textState);
     renderStatus(docxStatus, docxState);
   });
@@ -191,7 +168,7 @@ document.addEventListener("DOMContentLoaded", function () {
     textErrors.hidden = false;
     inputError.hidden = false;
     inputText.setAttribute("aria-invalid", "true");
-    inputText.setAttribute("aria-describedby", "input-text-hint input-text-error");
+    inputText.setAttribute("aria-describedby", "input-text-error");
     textErrors.focus();
   }
 
@@ -199,7 +176,7 @@ document.addEventListener("DOMContentLoaded", function () {
     textErrors.hidden = true;
     inputError.hidden = true;
     inputText.removeAttribute("aria-invalid");
-    inputText.setAttribute("aria-describedby", "input-text-hint");
+    inputText.removeAttribute("aria-describedby");
   }
 
   textErrorLink.addEventListener("click", function (event) {
@@ -215,15 +192,17 @@ document.addEventListener("DOMContentLoaded", function () {
     const input = inputText.value;
     if (input === "") {
       showTextError();
-      setNotice(null);
-      setTextStatus("error", outputText.value ? "emptyKept" : "empty");
+      setNotice(false);
+      // The error summary and the field error already say the input is empty.
+      if (outputText.value) setTextStatus("info", "emptyKept");
+      else clearTextStatus();
       return;
     }
     clearTextError();
     outputText.value = convertGandhariToUnicode(input);
     copyBtn.disabled = outputText.value === "";
     const count = Array.from(input).length;
-    setNotice(count);
+    setNotice(true);
     setTextStatus("success", "converted", { count: count });
   });
 
@@ -232,7 +211,7 @@ document.addEventListener("DOMContentLoaded", function () {
     outputText.value = "";
     copyBtn.disabled = true;
     clearTextError();
-    setNotice(null);
+    setNotice(false);
     setTextStatus("info", "cleared");
   });
 
@@ -294,13 +273,13 @@ document.addEventListener("DOMContentLoaded", function () {
     const file = docxInput.files[0];
     if (!file) {
       setDocxInputInvalid(false);
-      setDocxStatus("info", "none");
+      clearDocxStatus();
     } else if (isDocxName(file.name)) {
       setDocxInputInvalid(false);
-      setDocxStatus("info", "ready", { name: file.name });
+      clearDocxStatus();
     } else {
       setDocxInputInvalid(true);
-      setDocxStatus("error", "invalid", { name: file.name });
+      setDocxStatus("error", "invalid");
     }
     syncDocxControls();
   });
@@ -324,14 +303,14 @@ document.addEventListener("DOMContentLoaded", function () {
     const hadFocus = document.activeElement === convertDocxBtn;
     docxBusy = true;
     syncDocxControls();
-    setDocxStatus("processing", "busy", { name: file.name });
+    setDocxStatus("processing", "busy");
 
     try {
       const outputName = await convertDocxFile(file);
       setDocxStatus("success", "success", { name: outputName });
     } catch (e) {
       console.error(e);
-      setDocxStatus("error", "failure", { name: file.name });
+      setDocxStatus("error", "failure");
     } finally {
       docxBusy = false;
       syncDocxControls();
@@ -345,9 +324,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  // Initial state
-  setTextStatus("info", "initial");
-  setDocxStatus("info", "none");
+  // Initial state: no status text; the live regions stay in place for later updates.
   syncDocxControls();
   app.hidden = false;
 });

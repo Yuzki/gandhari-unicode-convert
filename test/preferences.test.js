@@ -5,7 +5,7 @@ const path = require("path");
 const vm = require("vm");
 
 const ROOT = path.resolve(__dirname, "..");
-const VENDOR = path.join(ROOT, "vendor/veda-design/0.1.0-pilot-af6d1dc/scripts");
+const VENDOR = path.join(ROOT, "vendor/veda-design/0.1.0-pilot-d08f1bf/scripts");
 const html = fs.readFileSync(path.join(ROOT, "index.html"), "utf8");
 const profiles = JSON.parse(fs.readFileSync(path.join(ROOT, "locales/profiles.json"), "utf8"));
 
@@ -135,7 +135,7 @@ describe("index.html script wiring", () => {
       assert.equal(find(name).length, 1, name);
     }
     const dirs = new Set(html.match(/vendor\/veda-design\/[^/"]+/g));
-    assert.deepEqual([...dirs], ["vendor/veda-design/0.1.0-pilot-af6d1dc"]);
+    assert.deepEqual([...dirs], ["vendor/veda-design/0.1.0-pilot-d08f1bf"]);
   });
 
   it("runs settings.js synchronously before theme.js; i18n.js stays deferred", () => {

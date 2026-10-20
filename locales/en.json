@@ -15,108 +15,80 @@
       "related": "Related project: VEDA AI (veda-ai.org)"
     },
     "footer": {
-      "fonts": "Save converted text and files with a font or editor that can display combining characters.",
-      "source": "Source code on GitHub",
-      "report": "Report a problem",
+      "fonts": "Use a font that supports combining characters.",
+      "source": "Source",
+      "report": "Report",
       "reportNote": "Reports become public GitHub issues. A GitHub account is required, and anything you write can be read by anyone. Do not include personal information."
     }
   },
   "app": {
     "pageTitle": "Gandhari Unicode Converter",
     "title": "Gandhari Unicode Converter",
-    "lead": "Converts characters of the “Gandhari Unicode” font, which uses the Unicode Private Use Area (PUA), into standard Unicode that uses combining characters.",
+    "heading": "Conversion",
+    "lead": "Converts Gandhari Unicode characters to standard Unicode.",
     "tabs": {
       "label": "Conversion mode",
-      "text": "Text conversion",
-      "docx": "DOCX file conversion"
+      "text": "Text",
+      "docx": "DOCX"
     },
     "text": {
       "inputTitle": "Input",
       "outputTitle": "Result",
-      "inputLabel": "Text to convert (Gandhari Unicode)",
-      "inputPlaceholder": "Paste text here…",
-      "inputHint": "The text is converted exactly as entered. It is never trimmed or normalized.",
-      "outputLabel": "Converted text",
-      "outputHint": "Read-only. Select the text to copy it manually if the copy button does not work.",
+      "inputPlaceholder": "Paste text…",
       "convert": "Convert",
       "clear": "Clear",
-      "copy": "Copy to clipboard",
-      "jumpToResult": "Go to result",
+      "copy": "Copy",
+      "jumpToResult": "View result",
       "errorsTitle": "Check your input",
       "errorEmpty": "Enter the text to convert."
     },
-    "textNotice": {
-      "converted": "Converted {count} characters."
-    },
     "textStatus": {
-      "initial": {
-        "title": "Ready",
-        "body": "Paste text and choose Convert."
-      },
       "converted": {
         "title": "Converted",
-        "body": "{count} characters were converted. The result is shown below the input on narrow screens."
-      },
-      "empty": {
-        "title": "Nothing converted",
-        "body": "The input is empty."
+        "body": "{count} characters"
       },
       "emptyKept": {
-        "title": "Nothing converted",
-        "body": "The input is empty. The previous result is still shown."
+        "title": "Previous result kept"
       },
       "cleared": {
-        "title": "Cleared",
-        "body": "The input and the result were cleared."
+        "title": "Cleared"
       },
       "copied": {
-        "title": "Copied",
-        "body": "The result was copied to the clipboard."
+        "title": "Copied"
       },
       "copyFailed": {
         "title": "Copy failed",
-        "body": "The browser did not allow copying. The result is selected; copy it manually."
+        "body": "The result is selected; copy it manually."
       },
       "copyUnavailable": {
         "title": "Copy not available",
-        "body": "This browser cannot copy automatically. The result is selected; copy it manually."
+        "body": "The result is selected; copy it manually."
       }
     },
     "docx": {
-      "title": "DOCX file",
-      "label": "Choose a DOCX file",
-      "hint": "The file is processed in your browser and its contents are not uploaded. The page still loads two helper libraries from a CDN (cdnjs).",
-      "convert": "Convert and download",
-      "invalidInline": "Choose a file with the .docx extension."
+      "title": "File",
+      "hint": "The file is converted in your browser and is not uploaded.",
+      "convert": "Convert",
+      "invalidInline": "Choose a .docx file."
     },
     "docxStatus": {
-      "none": {
-        "title": "No file selected",
-        "body": "Choose a .docx file to enable conversion."
-      },
-      "ready": {
-        "title": "Ready",
-        "body": "{name} is selected. Choose Convert and download."
-      },
       "invalid": {
-        "title": "Unsupported file",
-        "body": "{name} is not a .docx file. Choose a file with the .docx extension."
+        "title": "Unsupported file"
       },
       "busy": {
-        "title": "Converting",
-        "body": "Converting {name}…"
+        "title": "Converting…"
       },
       "success": {
         "title": "Download started",
-        "body": "{name} was sent to your browser’s download. Check that it was saved."
+        "body": "Check that {name} was saved."
       },
       "failure": {
         "title": "Conversion failed",
-        "body": "{name} could not be converted. The file may be damaged or not a valid DOCX. Check the file and try again; the file is still selected."
+        "body": "The file may be damaged or not a valid DOCX. Check it and try again."
       },
       "missingLibrary": {
         "title": "Conversion unavailable",
-        "body": "A required library did not load (it is fetched from a CDN). Check your connection, reload the page and try again."
+        "body": "A required library did not load. Check your connection and reload the page."
       }
     }
   }
