@@ -15,14 +15,14 @@ const FALLBACK_MESSAGES = {
   ],
   "app.docxStatus.invalid": ["Unsupported file"],
   "app.docxStatus.busy": ["Converting…"],
-  "app.docxStatus.success": ["Download started", "Check that {name} was saved."],
+  "app.docxStatus.success": ["Download started", "{name}"],
   "app.docxStatus.failure": [
     "Conversion failed",
-    "The file may be damaged or not a valid DOCX. Check it and try again.",
+    "Check the DOCX file and try again.",
   ],
   "app.docxStatus.missingLibrary": [
     "Conversion unavailable",
-    "A required library did not load. Check your connection and reload the page.",
+    "Check your connection and reload the page.",
   ],
 };
 

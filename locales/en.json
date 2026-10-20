@@ -17,8 +17,8 @@
     "footer": {
       "fonts": "Use a font that supports combining characters.",
       "source": "Source",
-      "report": "Report",
-      "reportNote": "Reports become public GitHub issues. A GitHub account is required, and anything you write can be read by anyone. Do not include personal information."
+      "report": "Report a problem",
+      "reportNote": "Reports are public. Omit personal information and submit with a GitHub account."
     }
   },
   "app": {
@@ -80,15 +80,15 @@
       },
       "success": {
         "title": "Download started",
-        "body": "Check that {name} was saved."
+        "body": "{name}"
       },
       "failure": {
         "title": "Conversion failed",
-        "body": "The file may be damaged or not a valid DOCX. Check it and try again."
+        "body": "Check the DOCX file and try again."
       },
       "missingLibrary": {
         "title": "Conversion unavailable",
-        "body": "A required library did not load. Check your connection and reload the page."
+        "body": "Check your connection and reload the page."
       }
     }
   }
