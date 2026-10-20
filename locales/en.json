@@ -10,7 +10,7 @@
       "dark": "Dark"
     },
     "required": "(required)",
-    "noscript": "JavaScript is disabled, so the converter cannot run. Enable JavaScript and reload this page to use it.",
+    "noscript": "JavaScript is disabled. Enable it and reload the page.",
     "project": {
       "related": "Related project: VEDA AI (veda-ai.org)"
     },

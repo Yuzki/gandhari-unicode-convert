@@ -10,7 +10,7 @@
       "dark": "ダーク"
     },
     "required": "（必須）",
-    "noscript": "JavaScript が無効なため、変換ツールは動作しません。JavaScript を有効にしてページを再読み込みしてください。",
+    "noscript": "JavaScript が無効です。有効にして再読み込みしてください。",
     "project": {
       "related": "関連プロジェクト: VEDA AI（veda-ai.org）"
     },
@@ -79,7 +79,7 @@
         "title": "変換中…"
       },
       "success": {
-        "title": "ダウンロードを開始しました",
+        "title": "ダウンロードを開始",
         "body": "{name}"
       },
       "failure": {
