@@ -14,10 +14,10 @@ Public page: <https://yuzki.github.io/gandhari-unicode-convert/>
 ## Usage
 
 1. Open the public page.
-2. Choose the **Text conversion** or **DOCX file conversion** tab.
-3. Text: paste text, choose **Convert**, then use **Copy to clipboard**. Empty input is reported as an error; whitespace is never trimmed and the text is never normalized. If copying is blocked, the result is selected so you can copy it manually.
-4. DOCX: choose a `.docx` file, then **Convert and download**. The file extension must be `.docx` (any letter case). While a file is converting, file selection and the convert button are disabled; if conversion fails, the file stays selected so you can retry.
-5. Check and save the result with a font or editor that can display combining characters.
+2. Choose the **Text** or **DOCX** tab.
+3. Text: paste text, choose **Convert**, then use **Copy**. The text is converted exactly as entered: whitespace is never trimmed and the text is never normalized. Empty input is reported as an error and keeps any previous result. After a conversion the result status shows the number of input characters (code points); on narrow screens **View result** under the input jumps to the result. If copying is blocked, the result is selected so you can copy it manually (the result is read-only).
+4. DOCX: choose a `.docx` file, then **Convert**; the converted file is downloaded. The file extension must be `.docx` (any letter case). While a file is converting, file selection and the convert button are disabled; if conversion fails, the file stays selected so you can retry.
+5. Check and save the result with a font or editor that can display combining characters; stacked marks may display poorly in fonts that do not support them.
 
 ### Language and theme
 
