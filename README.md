@@ -15,9 +15,18 @@ Public page: <https://yuzki.github.io/gandhari-unicode-convert/>
 
 1. Open the public page.
 2. Choose the **Text** or **DOCX** tab.
-3. Text: paste text, choose **Convert**, then use **Copy**. The text is converted exactly as entered: whitespace is never trimmed and the text is never normalized. Empty input is reported as an error and keeps any previous result. After a conversion the result status shows the number of input characters (code points); on narrow screens **View result** under the input jumps to the result. If copying is blocked, the result is selected so you can copy it manually (the result is read-only).
-4. DOCX: choose a `.docx` file, then **Convert**; the converted file is downloaded. The file extension must be `.docx` (any letter case). While a file is converting, file selection and the convert button are disabled; if conversion fails, the file stays selected so you can retry.
-5. Check and save the result with a font or editor that can display combining characters; stacked marks may display poorly in fonts that do not support them.
+3. Text: paste text, choose **Convert**, then choose **Copy**. If copying is blocked, the result is selected so you can copy it manually.
+4. DOCX: choose a `.docx` file, then choose **Convert**. The converted file is downloaded.
+5. View the result in a font or editor that supports combining characters; stacked marks may display poorly otherwise.
+
+Conversion runs in your browser; text and file contents are not uploaded. The page itself loads some resources from external servers, so it does not work offline.
+
+## Developer notes
+
+### Conversion behavior
+
+- Text is converted exactly as entered: whitespace is never trimmed and the text is never normalized. Empty input is reported as an error and keeps any previous result. The result status shows the number of input characters (code points). The result is read-only.
+- While a DOCX file is converting, file selection and the convert button are disabled; if conversion fails, the file stays selected so you can retry. The extension must be `.docx` (any letter case).
 
 ### Language and theme
 
@@ -35,9 +44,9 @@ Only an explicit choice is saved: the language or theme control, the API, or a v
 
 Sharing across VEDA AI services works only on `veda-ai.org` or a subdomain over HTTPS: the cookies are written with `Domain=veda-ai.org; Path=/; Max-Age=31536000; SameSite=Lax; Secure` (not HttpOnly). On HTTP, on localhost and on the current GitHub Pages address (`https://yuzki.github.io/gandhari-unicode-convert/`) no cookie is written or read, so the choice stays in this origin's local storage. A plain link from another site cannot carry the choice to such an address; to hand it over, add `?lang=` and/or `?theme=` to the link. Changes are not synchronized live between tabs or sites.
 
-### Privacy and dependencies
+### Dependencies
 
-Conversion runs in your browser. The text and the contents of DOCX files are not uploaded. This does not mean the page works offline or makes no external requests: [JSZip 3.10.1](https://cdnjs.com/libraries/jszip/3.10.1) and [FileSaver.js 2.0.5](https://cdnjs.com/libraries/FileSaver.js/2.0.5) are loaded from cdnjs. Text conversion does not need them, but DOCX conversion fails with a message if they cannot be loaded.
+The page makes external requests: [JSZip 3.10.1](https://cdnjs.com/libraries/jszip/3.10.1) and [FileSaver.js 2.0.5](https://cdnjs.com/libraries/FileSaver.js/2.0.5) are loaded from cdnjs. Text conversion does not need them, but DOCX conversion fails with a message if they cannot be loaded.
 
 ### Run locally
 
@@ -81,7 +90,3 @@ The footer "Report a problem" link opens the shared `veda-ai-feedback` issue for
 - `js/app.js`: interface behavior
 - `test/`: tests
 - `notebook/gandhari_conveter.py`: original conversion data in Python
-
-## Note
-
-Converted text contains combining characters. Stacked marks may display poorly in fonts or editors that do not support them.
