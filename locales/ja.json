@@ -80,7 +80,7 @@
       },
       "success": {
         "title": "ダウンロードを開始",
-        "body": "{name}"
+        "body": "{name} を変換しました。"
       },
       "failure": {
         "title": "変換に失敗しました",

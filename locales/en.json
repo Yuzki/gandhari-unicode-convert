@@ -80,7 +80,7 @@
       },
       "success": {
         "title": "Download started",
-        "body": "{name}"
+        "body": "Converted {name}."
       },
       "failure": {
         "title": "Conversion failed",

@@ -15,7 +15,7 @@ const FALLBACK_MESSAGES = {
   ],
   "app.docxStatus.invalid": ["Unsupported file"],
   "app.docxStatus.busy": ["Converting…"],
-  "app.docxStatus.success": ["Download started", "{name}"],
+  "app.docxStatus.success": ["Download started", "Converted {name}."],
   "app.docxStatus.failure": [
     "Conversion failed",
     "Check the DOCX file and try again.",
