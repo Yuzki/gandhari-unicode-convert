@@ -22,7 +22,8 @@
  * url | explicit | shared | local | browser | default.
  *
  * Popover: Esc, outside click and tabbing out close the open
- * details[data-veda-settings]; Esc returns focus to its summary.
+ * details[data-veda-settings]; Esc returns focus to its summary. Opening one
+ * entry closes the others, so only one panel is ever visible.
  * The open state is never stored. Without this script the details still
  * opens and closes natively via its summary.
  */
@@ -189,6 +190,17 @@
     }
   }
 
+  // toggle does not bubble: capture it to close the other entries on open.
+  document.addEventListener(
+    "toggle",
+    (event) => {
+      const details = event.target;
+      if (details?.open && details.matches?.(OPEN)) {
+        for (const other of document.querySelectorAll(OPEN)) if (other !== details) other.open = false;
+      }
+    },
+    true,
+  );
   document.addEventListener("keydown", (event) => {
     if (event.key !== "Escape" || event.defaultPrevented) return;
     const details = document.querySelector(OPEN);

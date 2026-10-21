@@ -11,6 +11,9 @@
  * enclosing [data-veda-settings] (display settings <details>) if any.
  * An explicit choice (including "system") is stored when possible; if storage
  * fails it still applies. Start-up never fires an event.
+ * Opt-in icon entry: <summary data-veda-theme-entry> inside the details. Its
+ * data-veda-theme-state (system | light | dark) and aria-label ("<label>:
+ * <selected option>") follow the current choice; syncing never saves anything.
  *
  * API: window.VedaTheme.set("system" | "light" | "dark"), .get()
  * Event: document "veda:themechange" with detail { theme }.
@@ -50,6 +53,18 @@
     return root.getAttribute("data-veda-theme") || "system";
   }
 
+  // Keeps opt-in icon entries in step with the current choice and language.
+  function sync() {
+    const theme = get();
+    for (const entry of document.querySelectorAll("summary[data-veda-theme-entry]")) {
+      entry.setAttribute("data-veda-theme-state", theme);
+      const panel = entry.parentElement;
+      const label = panel?.querySelector("label")?.textContent;
+      const option = panel?.querySelector("select[data-veda-theme-control]")?.selectedOptions?.[0]?.textContent;
+      if (label && option) entry.setAttribute("aria-label", `${label}: ${option}`);
+    }
+  }
+
   function set(theme) {
     if (!THEMES.includes(theme)) return;
     apply(theme);
@@ -60,6 +75,7 @@
     for (const control of document.querySelectorAll("select[data-veda-theme-control]")) {
       control.value = theme;
     }
+    sync();
     document.dispatchEvent(new CustomEvent("veda:themechange", { detail: { theme } }));
   }
 
@@ -80,10 +96,13 @@
       control.closest("[data-veda-settings]")?.removeAttribute("hidden");
       control.addEventListener("change", () => set(control.value));
     }
+    sync();
   }
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", bind, { once: true });
   else bind();
+
+  document.addEventListener("veda:languagechange", sync);
 
   window.VedaTheme = { set, get };
 })();
