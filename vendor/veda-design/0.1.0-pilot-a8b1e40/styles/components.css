@@ -171,6 +171,18 @@
   flex: none;
 }
 
+/* Icon entries sit side by side; their panels align to the tools' end edge so
+   a narrow screen never pushes the left entry's panel off the page. */
+.veda-header__tools:has(> .veda-settings > .veda-settings__summary--icon) {
+  position: relative;
+  align-items: center;
+  gap: var(--veda-space-2);
+}
+
+.veda-header__tools > .veda-settings:has(> .veda-settings__summary--icon) {
+  position: static;
+}
+
 .veda-tool {
   display: flex;
   flex-direction: column;
@@ -216,6 +228,49 @@
 
 .veda-settings[open] > .veda-settings__summary::before {
   content: "\25BE";
+}
+
+/* Icon entry: the box stays at least the target size; only the drawing is small. */
+.veda-settings__summary--icon {
+  justify-content: center;
+  min-inline-size: var(--veda-target-min);
+  padding-inline: var(--veda-space-2);
+  gap: var(--veda-space-1);
+}
+
+.veda-settings__summary--icon::before {
+  content: none;
+}
+
+.veda-settings[open] > .veda-settings__summary--icon::before {
+  content: none;
+}
+
+.veda-settings[open] > .veda-settings__summary--icon {
+  border-color: var(--veda-color-text);
+}
+
+.veda-settings__code {
+  font-size: var(--veda-font-size-sm);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.veda-icon {
+  display: block;
+  flex: none;
+  inline-size: 1.25rem;
+  block-size: 1.25rem;
+}
+
+[data-veda-theme-entry] > .veda-icon {
+  display: none;
+}
+
+[data-veda-theme-state="system"] > .veda-icon--system,
+[data-veda-theme-state="light"] > .veda-icon--light,
+[data-veda-theme-state="dark"] > .veda-icon--dark {
+  display: block;
 }
 
 .veda-settings__panel {

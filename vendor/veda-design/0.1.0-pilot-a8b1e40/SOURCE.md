@@ -3,11 +3,12 @@
 Runtime assets copied unmodified from the shared design system.
 
 - Upstream: `Yuzki/veda-ai-design-system` (private repository; not publicly available)
-- Commit: `d08f1bf748f5804fb376968f0378526727564ee4` (upstream PR #15: quiet UI rules,
-  merge commit on `main`)
+- Commit: `a8b1e40dfa4666e0925f5fcc95abb0d9d7004bb1` (upstream PR #17: icon display
+  settings, merge commit on `main`)
 - Version: 0.1.0, unreleased (no tag exists; this is not a published release)
-- Change since the previous pin `af6d1dc`: `styles/components.css` only. The other six
-  files are byte-identical.
+- Change since the previous pin `d08f1bf`: `styles/components.css`, `scripts/i18n.js`,
+  `scripts/settings.js` and `scripts/theme.js`. `tokens.css`, `typography.css` and
+  `report.js` are byte-identical.
 - Load order: `settings.js` then `theme.js` in `<head>` without `defer`; `i18n.js` and
   `report.js` deferred.
 - Terms: the pinned source reports no license notice. No license is granted or
@@ -19,11 +20,11 @@ Runtime assets copied unmodified from the shared design system.
 ```text
 96117f3d1cbc4d50da99b433be7225dbec3820f745c52c3769f59d2659fede86  styles/tokens.css
 746846c45bd692f669ea5d84c06524c4e8a83cb887d1f0621acc245844e7ec50  styles/typography.css
-ac637b12eeb252eb6b0647d53d20ef987cc72824cd9b46d2f5c2ea1ccbe93a97  styles/components.css
-ec76b7eb940926d1d344efe5b9324c675fbf1b0d1cf977f5dfc57ae1953277d6  scripts/i18n.js
-c5fb1d7093b10f52c4b13250fde39cd56390035973d8f3f060353a931e962db9  scripts/theme.js
+79c9449265da09a4039e95e8f3f143c281822b1d6adc4125cb3437e140fcca22  styles/components.css
+aee984c17d03d56c123ad94f2d59d90867f9714898697340be08596acddc394e  scripts/i18n.js
+37fb7483a57ca74a60f2444c2dae2a1abe9ef5cdc13cc04c5a24248adb69419f  scripts/theme.js
 071b65faf7399893061699706585def21e86a477f182c39b7610e7c6dd49b982  scripts/report.js
-9b971ed13b198bfc2f8f9f5fb42df59ac3d0d21dcec1c5c06a0f0366260569a7  scripts/settings.js
+cf861ac785fcb00813cd42f5200692dc91a4c72e65f71560c1b430ee57e9cb27  scripts/settings.js
 ```
 
 Do not edit these files. Local adjustments belong in `css/style.css`; shared
@@ -35,11 +36,11 @@ The seven git blob ids of these files were compared with the upstream tree of th
 pinned commit (GitHub git trees API, `git hash-object`) and match. To repeat:
 
 ```sh
-cd vendor/veda-design/0.1.0-pilot-d08f1bf
+cd vendor/veda-design/0.1.0-pilot-a8b1e40
 sha256sum styles/*.css scripts/*.js
 # or against the pinned source (needs access to the private repository):
 for f in styles/tokens.css styles/typography.css styles/components.css scripts/i18n.js scripts/theme.js scripts/report.js scripts/settings.js; do
-  git -C /path/to/veda-ai-design-system show d08f1bf748f5804fb376968f0378526727564ee4:$f | cmp - $f
+  git -C /path/to/veda-ai-design-system show a8b1e40dfa4666e0925f5fcc95abb0d9d7004bb1:$f | cmp - $f
 done
 ```
 
@@ -48,4 +49,4 @@ done
 Import a new snapshot into a sibling directory using `git -C <source> show <commit>:<path>`,
 record its commit and hashes in a new `SOURCE.md`, switch the paths in `index.html`
 and the tests, and remove the superseded directory in the same change. Roll back with
-`git revert` of that change, which restores the previous snapshot (`af6d1dc`) and paths.
+`git revert` of that change, which restores the previous snapshot (`d08f1bf`) and paths.

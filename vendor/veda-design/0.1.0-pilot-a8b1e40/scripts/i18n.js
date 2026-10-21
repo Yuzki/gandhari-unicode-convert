@@ -7,6 +7,10 @@
  *   <select data-veda-language>        language switcher; its nearest
  *                                      [data-veda-requires-js] container is un-hidden,
  *                                      and so is the enclosing [data-veda-settings]
+ *   <summary data-veda-language-entry> opt-in icon entry: its [data-veda-language-code]
+ *                                      shows the active language (JA / EN) and its aria-label
+ *                                      becomes "<label> <CODE>"; synced only after a language
+ *                                      has actually been applied.
  * Load settings.js (head, no defer) first. Language priority: ?lang= >
  * shared cookie > saved choice > browser languages > profiles.default (see
  * settings.js); <html lang> only describes the static text, it is not a choice.
@@ -137,6 +141,15 @@
     }
   }
 
+  function syncEntries() {
+    const code = state.lang.toUpperCase();
+    for (const entry of document.querySelectorAll("summary[data-veda-language-entry]")) {
+      for (const element of entry.querySelectorAll("[data-veda-language-code]")) element.textContent = code;
+      const label = entry.parentElement?.querySelector("label")?.textContent;
+      if (label) entry.setAttribute("aria-label", `${label} ${code}`);
+    }
+  }
+
   function updateUrl(lang) {
     const url = new URL(location.href);
     if (url.searchParams.get(PARAM) === lang) return;
@@ -159,6 +172,7 @@
     for (const control of document.querySelectorAll("select[data-veda-language]")) {
       control.value = lang;
     }
+    syncEntries();
     if (persist) {
       if (shared) {
         shared.saveLanguage(lang);
